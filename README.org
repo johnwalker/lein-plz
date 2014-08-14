@@ -40,14 +40,8 @@
    #+BEGIN_SRC clojure
    {:org.clojure/clojurescript   #{"clojurescript" "cljs"}
     :org.clojure/core.async      #{"core.async" "async"}
-    :org.clojure/core.cache      #{"core.cache" "cache"}
-    :org.clojure/core.logic      #{"core.logic" "logic"}
-    :org.clojure/core.match      #{"core.match" "match"}
-    :org.clojure/core.memoize    #{"core.memoize" "memoize"}
     :org.clojure/core.typed      #{"core.typed" "typed"}
-    :org.clojure/data.json       #{"data.json" "json"}
-    :org.clojure/data.xml        #{"data.xml" "xml"}
-    :org.clojure/java.jdbc       #{"java.jdbc" "jdbc"}
+
     ;; Databases for jdbc
     :org.apache.derby/derby      #{"derby"}
     :hsqldb/hsqldb               #{"hsqldb"}
@@ -61,8 +55,8 @@
     :ring                        #{"ring"}}
    #+END_SRC
 
-   The keywords are the full dependency, while each value is a set of
-   abbreviations for that dependency.
+   The keywords are the full dependency names, while each value is a
+   set of abbreviations for that dependency.
 
    If that map resides in =/home/stuartsierra/.lein/plz/myplzmap.edn=,
    then =/home/stuartsierra/.lein/profiles.clj= should be:
