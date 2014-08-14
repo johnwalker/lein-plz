@@ -1,4 +1,4 @@
-(defproject lein-plz "0.1.0-SNAPSHOT"
+(defproject lein-plz "0.1.0"
   :description "A Leiningen plugin for adding dependencies to projects quickly."
   :url "http://johnwalker.io/posts/lein-plz.html"
   :license {:name "Eclipse Public License"
