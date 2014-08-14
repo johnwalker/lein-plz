@@ -81,7 +81,7 @@
                    "/home/stuartsierra/.lein/plz/user-map-2.edn"
                    "/home/stuartsierra/.lein/plz/user-map-3.edn"]}}
 
-;; (merge fallback-abbreviation-map user-map-1 user-map-2 user-map-3 ...)
+     ;; (merge fallback-abbreviation-map user-map-1 user-map-2 user-map-3 ...)
    #+END_SRC
 ** Warnings
    Do not use relative paths.
