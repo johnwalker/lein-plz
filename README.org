@@ -23,8 +23,7 @@
 ** Adding your own abbreviations
 
    =lein-plz= has fallback abbreviations, but it can be put to better
-   use if you add some of your own. User specified maps get merged
-   later.
+   use with your own. User specified maps get merged later.
 
    #+BEGIN_SRC clojure
    (merge fallback-abbreviation-map user-map-1 user-map-2 user-map-3 ...)
