@@ -10,21 +10,21 @@
    ancient). You still have to type out the groupIds and -- anyway, it
    takes some typing.
 
-   With =lein-plz=, it's just
+   With =lein-plz=:
 
    #+BEGIN_SRC sh
      lein plz add async cljs json
    #+END_SRC
 
    and your =project.clj= is updated with the latest versions of each
-   abbreviation's corresponding dependency. Abbreviations are
-   user-specified, so you can be quite brief.
+   abbreviation's corresponding dependency. Users can specify their
+   abbreviations to the desired brevity.
 
 ** Adding your own abbreviations
 
-   Although lein-plz has some abbreviations, they can be easily
-   overwritten with your own. lein-plz's abbreviation-map is just the
-   merge of a bunch of maps:
+   =lein-plz= has fallback abbreviations, but it can be put to better
+   use if you add some of your own. User specified maps get merged
+   later.
 
    #+BEGIN_SRC clojure
    (merge fallback-abbreviation-map user-map-1 user-map-2 user-map-3 ...)
@@ -59,10 +59,8 @@
    The keywords are the full dependency, while each value is a set of
    abbreviations for that dependency.
 
-   So suppose that map resides in
-   =/home/stuartsierra/.lein/plz/myplzmap.edn=.
-
-   In =/home/stuartsierra/.lein/profiles.clj=:
+   If that map resides in =/home/stuartsierra/.lein/plz/myplzmap.edn=,
+   then =/home/stuartsierra/.lein/profiles.clj= should be:
 
    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
@@ -71,7 +69,7 @@
              :plz ["/home/stuartsierra/.lein/plz/myplzmap.edn"]}}
    #+END_SRC
 
-   If you had more maps, then they should be specified in a vector:
+   There can be more maps:
 
    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
@@ -82,6 +80,7 @@
                    "/home/stuartsierra/.lein/plz/user-map-3.edn"]}}
 
      ;; (merge fallback-abbreviation-map user-map-1 user-map-2 user-map-3 ...)
+     ;; so user-map-3 overwrites user-map-2 overwrites ...
    #+END_SRC
 ** Warnings
    Do not use relative paths.
