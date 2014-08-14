@@ -23,14 +23,14 @@
 ** Adding your own abbreviations
 
    Although lein-plz has some abbreviations, they can be easily
-   overwritten with your own. lein-plz's abbreviation-map is built
-   like this:
+   overwritten with your own. lein-plz's abbreviation-map is just the
+   merge of a bunch of maps:
 
    #+BEGIN_SRC clojure
    (merge fallback-abbreviation-map user-map-1 user-map-2 user-map-3 ...)
    #+END_SRC
 
-   Each map should be in it's own file, and should look like this:
+   Each map should be in it's own file, and should look:
 
    #+BEGIN_SRC clojure
    {:org.clojure/clojurescript   #{"clojurescript" "cljs"}
@@ -60,9 +60,9 @@
    abbreviations for that dependency.
 
    So suppose that map resides in
-   =/home/stuartsierra/.lein/plz/myplzmap.edn=. *Do not use relative
-   paths.* Then your =/home/stuartsierra/.lein/profiles.clj= should
-   look like this:
+   =/home/stuartsierra/.lein/plz/myplzmap.edn=.
+
+   In =/home/stuartsierra/.lein/profiles.clj=:
 
    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
@@ -71,7 +71,7 @@
              :plz ["/home/stuartsierra/.lein/plz/myplzmap.edn"]}}
    #+END_SRC
 
-   If you had more maps, then they should be specified like this:
+   If you had more maps, then they should be specified in a vector:
 
    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
@@ -81,6 +81,11 @@
                    "/home/stuartsierra/.lein/plz/user-map-2.edn"
                    "/home/stuartsierra/.lein/plz/user-map-3.edn"]}}
    #+END_SRC
+** Warnings
+   Do not use relative paths.
+
+   Also, this is quite new and untested. Only use this on
+   project.clj's you can afford to throw away.
 
 ** Installation
 
@@ -101,4 +106,4 @@
    Copyright © 2014 John Walker
 
    Distributed under the Eclipse Public License either version 1.0 or
-   any later version.
+   any later version
