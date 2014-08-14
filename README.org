@@ -1,7 +1,6 @@
 * lein-plz
 
-  A Leiningen plugin for quickly adding dependencies to projects. Only
-  supports =lein 2.4.0= and greater.
+  A Leiningen plugin for quickly adding dependencies to projects.
 
 ** Usage
 
