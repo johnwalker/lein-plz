@@ -68,8 +68,8 @@
     (when (and (= "add" action) (seq abbreviations))
       (let [root                   (:root project)
             project-file           (str root "/" "project.clj")
-            am                     (or (apply merge (map (comp read-string slurp) plz-options))
-                                       fallback-abbreviation-map)
+            am                     (merge fallback-abbreviation-map
+                                          (apply merge (mapv (comp read-string slurp) plz-options)))
             suggested-dependencies (map (partial abbreviation->dependency-str
                                                  am)
                                         abbreviations)
