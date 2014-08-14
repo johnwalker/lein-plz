@@ -23,8 +23,8 @@
 
 ** Installation
 
-   Just add =[lein-plz "0.1.0"]= to the `:plugins` vector of your
-   `:user` profile.
+   Just add =[lein-plz "0.1.0"]= to the =:plugins= vector of your
+   =:user= profile.
 
 ** Adding your own abbreviations
 
