@@ -17,8 +17,8 @@
    #+END_SRC
 
    and your =project.clj= is updated with the latest versions of each
-   abbreviation's corresponding dependency. Users can specify their
-   abbreviations to the desired brevity.
+   corresponding dependency. Users specify abbreviations to their
+   desired brevity.
 
 ** Adding your own abbreviations
 
