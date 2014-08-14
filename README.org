@@ -21,12 +21,12 @@
    corresponding dependency. Users specify abbreviations to their
    desired brevity.
 
-** Installation
+** Setup
 
    Just add =[lein-plz "0.1.0"]= to the =:plugins= vector of your
    =:user= profile.
 
-** Adding your own abbreviations
+*** Adding your own abbreviations
 
    =lein-plz= has fallback abbreviations, but it can be put to better
    use with your own. User specified maps get merged later.
@@ -87,11 +87,9 @@
      ;; (merge fallback-abbreviation-map user-map-1 user-map-2 user-map-3 ...)
      ;; so user-map-3 overwrites user-map-2 overwrites ...
    #+END_SRC
-** Warnings
-   Do not use relative paths.
-
-   Also, this is quite new and untested. Only use this on
-   project.clj's you can afford to throw away.
+** Warnings from your doctor
+   + Only use this on project.clj's you can afford to throw away.
+   + I haven't checked if relative paths work.
 
 ** License
 
