@@ -1,4 +1,5 @@
 * lein-plz
+  [[img/yes.jpg]]
 
   A Leiningen plugin for quickly adding dependencies to projects.
 
