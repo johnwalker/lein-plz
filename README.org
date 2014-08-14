@@ -1,0 +1,44 @@
+* lein-plz
+
+  A Leiningen plugin for quickly adding dependencies to projects. Only
+  supports =lein 2.4.0= and greater.
+
+** Usage
+
+   Suppose you want to add =clojurescript=, =core.async= and
+   =data.json= to a project. Maybe you remember the versions latest
+   versions off-hand (or at least, a valid one so that you can use
+   lein ancient). You still have to type out all the group id stuff --
+   anyway, it takes some typing.
+
+   With =lein-plz=, it's just
+
+   #+BEGIN_SRC sh
+     lein plz add async cljs json
+   #+END_SRC
+
+   and your =project.clj= is updated.
+
+   Finally, you can add abbreviations.
+*** TODO Add abbreviation details
+
+** Installation
+
+   For now - as it has not yet been released - clone the repository,
+   enter it and run =lein install=:
+
+   #+BEGIN_SRC sh
+     git clone https://github.com/johnwalker/lein-plz
+     cd lein-plz & lein install
+   #+END_SRC
+
+   Finally, add =[lein-plz "0.1.0-SNAPSHOT"]= to the `:plugins` vector
+   of your `:user` profile.
+
+
+** License
+
+   Copyright © 2014 John Walker
+
+   Distributed under the Eclipse Public License either version 1.0 or
+   any later version.
