@@ -6,10 +6,10 @@
 ** Usage
 
    Suppose you want to add =clojurescript=, =core.async= and
-   =data.json= to a project. Maybe you remember the versions latest
-   versions off-hand (or at least, a valid one so that you can use
-   lein ancient). You still have to type out all the group id stuff --
-   anyway, it takes some typing.
+   =data.json= to a project. Maybe you remember the latest versions
+   off-hand (or at least, a valid one so that you can use lein
+   ancient). You still have to type out the groupIds and -- anyway, it
+   takes some typing.
 
    With =lein-plz=, it's just
 
@@ -17,11 +17,9 @@
      lein plz add async cljs json
    #+END_SRC
 
-   and your =project.clj= is updated with the latest versions.
-
-   Finally, you can add abbreviations.
-*** TODO Add abbreviation details
-
+   and your =project.clj= is updated with the latest versions of each
+   abbreviation's corresponding dependency. Abbreviations are
+   user-specified, so you can be quite brief.
 ** Installation
 
    For now - as it has not yet been released - clone the repository,
