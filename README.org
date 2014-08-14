@@ -19,6 +19,69 @@
    and your =project.clj= is updated with the latest versions of each
    abbreviation's corresponding dependency. Abbreviations are
    user-specified, so you can be quite brief.
+
+** Adding your own abbreviations
+
+   Although lein-plz has some abbreviations, they can be easily
+   overwritten with your own. lein-plz's abbreviation-map is built
+   like this:
+
+   #+BEGIN_SRC clojure
+   (merge fallback-abbreviation-map user-map-1 user-map-2 user-map-3 ...)
+   #+END_SRC
+
+   Each map should be in it's own file, and should look like this:
+
+   #+BEGIN_SRC clojure
+   {:org.clojure/clojurescript   #{"clojurescript" "cljs"}
+    :org.clojure/core.async      #{"core.async" "async"}
+    :org.clojure/core.cache      #{"core.cache" "cache"}
+    :org.clojure/core.logic      #{"core.logic" "logic"}
+    :org.clojure/core.match      #{"core.match" "match"}
+    :org.clojure/core.memoize    #{"core.memoize" "memoize"}
+    :org.clojure/core.typed      #{"core.typed" "typed"}
+    :org.clojure/data.json       #{"data.json" "json"}
+    :org.clojure/data.xml        #{"data.xml" "xml"}
+    :org.clojure/java.jdbc       #{"java.jdbc" "jdbc"}
+    ;; Databases for jdbc
+    :org.apache.derby/derby      #{"derby"}
+    :hsqldb/hsqldb               #{"hsqldb"}
+    :mysql/mysql-connector-java  #{"mysql"}
+    :net.sourceforge.jtds/jtds   #{"jtds"}
+    :postgresql/postgresql       #{"postgresql" "postgres"}
+    :org.xerial/sqlite-jdbc      #{"sqlite"}
+
+    :compojure                   #{"compojure"}
+    :hiccup                      #{"hiccup"}
+    :ring                        #{"ring"}}
+   #+END_SRC
+
+   The keywords are the full dependency, while each value is a set of
+   abbreviations for that dependency.
+
+   So suppose that map resides in
+   =/home/stuartsierra/.lein/plz/myplzmap.edn=. *Do not use relative
+   paths.* Then your =/home/stuartsierra/.lein/profiles.clj= should
+   look like this:
+
+   #+BEGIN_SRC clojure
+     {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
+                       [lein-plz "0.1.0-SNAPSHOT"]
+                       [slamhound "1.5.5"]]
+             :plz ["/home/stuartsierra/.lein/plz/myplzmap.edn"]}}
+   #+END_SRC
+
+   If you had more maps, then they should be specified like this:
+
+   #+BEGIN_SRC clojure
+     {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
+                       [lein-plz "0.1.0-SNAPSHOT"]
+                       [slamhound "1.5.5"]]
+             :plz ["/home/stuartsierra/.lein/plz/myplzmap.edn"
+                   "/home/stuartsierra/.lein/plz/user-map-2.edn"
+                   "/home/stuartsierra/.lein/plz/user-map-3.edn"]}}
+   #+END_SRC
+
 ** Installation
 
    For now - as it has not yet been released - clone the repository,
