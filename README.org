@@ -17,7 +17,7 @@
      lein plz add async cljs json
    #+END_SRC
 
-   and your =project.clj= is updated.
+   and your =project.clj= is updated with the latest versions.
 
    Finally, you can add abbreviations.
 *** TODO Add abbreviation details
