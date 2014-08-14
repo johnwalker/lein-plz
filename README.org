@@ -23,7 +23,7 @@
 
 ** Setup
 
-   Just add =[lein-plz "0.1.0"]= to the =:plugins= vector of your
+   Just add =[lein-plz "0.1.1-SNAPSHOT"]= to the =:plugins= vector of your
    =:user= profile.
 
 *** Adding your own abbreviations
@@ -63,7 +63,7 @@
 
    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                       [lein-plz "0.1.0"]
+                       [lein-plz "0.1.1-SNAPSHOT"]
                        [slamhound "1.5.5"]]
              :plz ["/home/stuartsierra/.lein/plz/myplzmap.edn"]}}
    #+END_SRC
@@ -72,7 +72,7 @@
 
    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                       [lein-plz "0.1.0"]
+                       [lein-plz "0.1.1-SNAPSHOT"]
                        [slamhound "1.5.5"]]
              :plz ["/home/stuartsierra/.lein/plz/myplzmap.edn"
                    "/home/stuartsierra/.lein/plz/user-map-2.edn"
