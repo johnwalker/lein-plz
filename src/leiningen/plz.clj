@@ -4,10 +4,7 @@
             [rewrite-clj.zip :as z]
             [rewrite-clj.zip.indent :refer [indent]]))
 
-(def abbreviation-map
-  "TODO: This should be stored as edn.
-  TODO: Find something to do."
-
+(def fallback-abbreviation-map
   {:org.clojure/clojure         #{"clojure" "clj"}
    :org.clojure/clojurescript   #{"clojurescript" "cljs"}
    :org.clojure/core.async      #{"core.async" "async"}
@@ -64,11 +61,15 @@
 (defn plz
   "STOP LOOKING AT ME"
   [project & args]
-  (let [[action & abbreviations]  args]
-    (when (= "add" action)
+  (let [plz-options (:plz project)
+        [action & abbreviations]  args]
+    (when-not (seq plz-options)
+      (println "No options specified in system profiles.clj. Using fallback abbreviations."))
+    (when (and (= "add" action) (seq abbreviations))
       (let [root                   (:root project)
             project-file           (str root "/" "project.clj")
-            am                     abbreviation-map
+            am                     (or (apply merge (map (comp read-string slurp) plz-options))
+                                       fallback-abbreviation-map)
             suggested-dependencies (map (partial abbreviation->dependency-str
                                                  am)
                                         abbreviations)
