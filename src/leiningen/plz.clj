@@ -64,12 +64,17 @@
   (let [plz-options (:plz project)
         [action & abbreviations]  args]
     (when-not (seq plz-options)
-      (println "No options specified in system profiles.clj. Using fallback abbreviations."))
+      (println "No options specified in system profiles.clj."))
     (when (and (= "add" action) (seq abbreviations))
       (let [root                   (:root project)
             project-file           (str root "/" "project.clj")
             am                     (merge fallback-abbreviation-map
-                                          (apply merge (mapv (comp read-string slurp) plz-options)))
+                                          (cond (string? plz-options) ((comp read-string slurp) plz-options)
+                                                (or (vector? plz-options) (list? plz-options)) (apply merge (mapv (comp read-string slurp) plz-options))
+                                                (map? plz-options) plz-options
+                                                :else (when (seq plz-options)
+                                                        (println "I have no idea how this triggered...file a bug report here:")
+                                                        (println "https://github.com/johnwalker/lein-plz"))))
             suggested-dependencies (map (partial abbreviation->dependency-str
                                                  am)
                                         abbreviations)
