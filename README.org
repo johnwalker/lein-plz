@@ -21,6 +21,11 @@
    corresponding dependency. Users specify abbreviations to their
    desired brevity.
 
+** Installation
+
+   Just add =[lein-plz "0.1.0"]= to the `:plugins` vector of your
+   `:user` profile.
+
 ** Adding your own abbreviations
 
    =lein-plz= has fallback abbreviations, but it can be put to better
@@ -64,7 +69,7 @@
 
    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                       [lein-plz "0.1.0-SNAPSHOT"]
+                       [lein-plz "0.1.0"]
                        [slamhound "1.5.5"]]
              :plz ["/home/stuartsierra/.lein/plz/myplzmap.edn"]}}
    #+END_SRC
@@ -87,12 +92,6 @@
 
    Also, this is quite new and untested. Only use this on
    project.clj's you can afford to throw away.
-
-** Installation
-
-   Add =[lein-plz "0.1.0"]= to the `:plugins` vector of your
-   `:user` profile.
-
 
 ** License
 
