@@ -30,7 +30,7 @@
    (merge fallback-abbreviation-map user-map-1 user-map-2 user-map-3 ...)
    #+END_SRC
 
-   Each map should be in it's own file, and should look:
+   Each map should be in its own file:
 
    #+BEGIN_SRC clojure
    {:org.clojure/clojurescript   #{"clojurescript" "cljs"}
