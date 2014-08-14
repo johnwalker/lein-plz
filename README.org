@@ -73,7 +73,7 @@
 
    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                       [lein-plz "0.1.0-SNAPSHOT"]
+                       [lein-plz "0.1.0"]
                        [slamhound "1.5.5"]]
              :plz ["/home/stuartsierra/.lein/plz/myplzmap.edn"
                    "/home/stuartsierra/.lein/plz/user-map-2.edn"
@@ -90,16 +90,8 @@
 
 ** Installation
 
-   For now - as it has not yet been released - clone the repository,
-   enter it and run =lein install=:
-
-   #+BEGIN_SRC sh
-     git clone https://github.com/johnwalker/lein-plz
-     cd lein-plz & lein install
-   #+END_SRC
-
-   Finally, add =[lein-plz "0.1.0-SNAPSHOT"]= to the `:plugins` vector
-   of your `:user` profile.
+   Add =[lein-plz "0.1.0"]= to the `:plugins` vector of your
+   `:user` profile.
 
 
 ** License
