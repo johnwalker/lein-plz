@@ -82,7 +82,7 @@
      ;; so user-map-3 overwrites user-map-2 overwrites ...
    #+END_SRC
 ** Warnings from your doctor
-   + Only use on project.clj's you can afford to throw away.
+   + +Only use on project.clj's you can afford to throw away.+ Fixed in #2
    + I haven't checked if relative paths work.
 
 ** License
