@@ -30,7 +30,6 @@
 
 
 (defn lookup-abbrev
-  "Hahaha yeah ;). 1.7.0 will clean this up."
   [abbreviation-map abbrev]
   (->> abbreviation-map
        (filter (fn [[dependency set-of-abbrevs]]
@@ -67,7 +66,6 @@
       (indent 16)))
 
 (defn conj-deps
-  "Lots in here to pull out..."
   [[k z] deps]
   (try [true
         (case k
@@ -100,7 +98,6 @@
     (println m)))
 
 (defn plz
-  "STOP LOOKING AT ME"
   [project & args]
   (let [plz-options (:plz project)
         [action & abbrevs] args]
