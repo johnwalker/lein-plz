@@ -23,7 +23,7 @@
 
 ** Setup
 
-   Just add =[lein-plz "0.1.1-SNAPSHOT"]= to the =:plugins= vector of your
+   Just add =[lein-plz "0.1.1"]= to the =:plugins= vector of your
    =:user= profile.
 
 *** Adding your own abbreviations
@@ -38,21 +38,21 @@
    Each map should be in its own file:
 
    #+BEGIN_SRC clojure
-   {:org.clojure/clojurescript   #{"clojurescript" "cljs"}
-    :org.clojure/core.async      #{"core.async" "async"}
-    :org.clojure/core.typed      #{"core.typed" "typed"}
+   {org.clojure/clojurescript   #{"clojurescript" "cljs"}
+    org.clojure/core.async      #{"core.async" "async"}
+    org.clojure/core.typed      #{"core.typed" "typed"}
 
     ;; Databases for jdbc
-    :org.apache.derby/derby      #{"derby"}
-    :hsqldb/hsqldb               #{"hsqldb"}
-    :mysql/mysql-connector-java  #{"mysql"}
-    :net.sourceforge.jtds/jtds   #{"jtds"}
-    :postgresql/postgresql       #{"postgresql" "postgres"}
-    :org.xerial/sqlite-jdbc      #{"sqlite"}
+    org.apache.derby/derby      #{"derby"}
+    hsqldb/hsqldb               #{"hsqldb"}
+    mysql/mysql-connector-java  #{"mysql"}
+    net.sourceforge.jtds/jtds   #{"jtds"}
+    postgresql/postgresql       #{"postgresql" "postgres"}
+    org.xerial/sqlite-jdbc      #{"sqlite"}
 
-    :compojure                   #{"compojure"}
-    :hiccup                      #{"hiccup"}
-    :ring                        #{"ring"}}
+    compojure                   #{"compojure"}
+    hiccup                      #{"hiccup"}
+    ring                        #{"ring"}}
    #+END_SRC
 
    The keywords are the full dependency names, while each value is a
@@ -63,7 +63,7 @@
 
    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                       [lein-plz "0.1.1-SNAPSHOT"]
+                       [lein-plz "0.1.1"]
                        [slamhound "1.5.5"]]
              :plz ["/home/stuartsierra/.lein/plz/myplzmap.edn"]}}
    #+END_SRC
@@ -72,7 +72,7 @@
 
    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                       [lein-plz "0.1.1-SNAPSHOT"]
+                       [lein-plz "0.1.1"]
                        [slamhound "1.5.5"]]
              :plz ["/home/stuartsierra/.lein/plz/myplzmap.edn"
                    "/home/stuartsierra/.lein/plz/user-map-2.edn"
@@ -82,7 +82,7 @@
      ;; so user-map-3 overwrites user-map-2 overwrites ...
    #+END_SRC
 ** Warnings from your doctor
-   + Only use this on project.clj's you can afford to throw away.
+   + Only use on project.clj's you can afford to throw away.
    + I haven't checked if relative paths work.
 
 ** License
