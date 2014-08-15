@@ -5,53 +5,45 @@
             [rewrite-clj.zip.indent :refer [indent]]))
 
 (def fallback-abbreviation-map
-  {:org.clojure/clojure         #{"clojure" "clj"}
-   :org.clojure/clojurescript   #{"clojurescript" "cljs"}
-   :org.clojure/core.async      #{"core.async" "async"}
-   :org.clojure/core.cache      #{"core.cache" "cache"}
-   :org.clojure/core.logic      #{"core.logic" "logic"}
-   :org.clojure/core.match      #{"core.match" "match"}
-   :org.clojure/core.memoize    #{"core.memoize" "memoize"}
-   :org.clojure/core.typed      #{"core.typed" "typed"}
-   :org.clojure/data.edn        #{"data.edn" "edn"}
-   :org.clojure/data.json       #{"data.json" "json"}
-   :org.clojure/data.xml        #{"data.xml" "xml"}
-   :org.clojure/java.jdbc       #{"java.jdbc" "jdbc"}
-   ;; Databases for jdbc
-   :org.apache.derby/derby      #{"derby"}
-   :hsqldb/hsqldb               #{"hsqldb"}
-   :mysql/mysql-connector-java  #{"mysql"}
-   :net.sourceforge.jtds/jtds   #{"jtds"}
-   :postgresql/postgresql       #{"postgresql" "postgres"}
-   :org.xerial/sqlite-jdbc      #{"sqlite"}
+  `{org.clojure/clojure         #{"clojure" "clj"}
+    org.clojure/clojurescript   #{"clojurescript" "cljs"}
+    org.clojure/core.async      #{"core.async" "async"}
+    org.clojure/core.cache      #{"core.cache" "cache"}
+    org.clojure/core.logic      #{"core.logic" "logic"}
+    org.clojure/core.match      #{"core.match" "match"}
+    org.clojure/core.memoize    #{"core.memoize" "memoize"}
+    org.clojure/core.typed      #{"core.typed" "typed"}
+    org.clojure/data.json       #{"data.json" "json"}
+    org.clojure/data.xml        #{"data.xml" "xml"}
+    org.clojure/java.jdbc       #{"java.jdbc" "jdbc"}
+    ;; Databases for jdbc
+    org.apache.derby/derby      #{"derby"}
+    hsqldb/hsqldb               #{"hsqldb"}
+    mysql/mysql-connector-java  #{"mysql"}
+    net.sourceforge.jtds/jtds   #{"jtds"}
+    postgresql/postgresql       #{"postgresql" "postgres"}
+    org.xerial/sqlite-jdbc      #{"sqlite"}
 
-   :compojure                   #{"compojure"}
-   :hiccup                      #{"hiccup"}
-   :ring                        #{"ring"}})
+    compojure                   #{"compojure"}
+    hiccup                      #{"hiccup"}
+    ring                        #{"ring"}})
 
 
-(defn keyword->str [k]
-  (str (when-let [n (namespace k)]
-         (str n "/")) (name k)))
-
-(defn abbreviation->dependency-str
+(defn lookup-abbrev
   "Hahaha yeah ;). 1.7.0 will clean this up."
   [abbreviation-map abbrev]
-  (-> (filter
-       (fn [[dependency set-of-abbrevs]]
-         (when (set-of-abbrevs abbrev)
-           dependency))
-       abbreviation-map)
-      first
-      first
-      keyword->str))
+  (->> abbreviation-map
+       (filter (fn [[dependency set-of-abbrevs]]
+                 (when (set-of-abbrevs abbrev)
+                   dependency)))
+       first first))
 
 (defn to-updated-pair [s]
   [s (anc/latest-version-string! {:snapshots? false} s)])
 
 (defn determine-case [prj-map]
-  (if-let [z-deps (-> prj-map (z/find-value :dependencies))]
-    (let [z-deps-v (-> z-deps z/right)
+  (if-let [z-deps (z/find-value prj-map :dependencies)]
+    (let [z-deps-v (z/right z-deps)
           s-deps-v (z/sexpr z-deps-v)]
       [(if (seq s-deps-v)
          (if (vector? s-deps-v)
@@ -62,112 +54,107 @@
            :something-else)) z-deps-v])
     [:no-dep-key prj-map]))
 
+(defn get-deps [[k z]]
+  (if (= k :some-vector)
+    (set (map first (z/sexpr z)))
+    #{}))
+
+(defn insert-dep [z dep]
+  (-> z
+      (z/insert-right dep)
+      (z/append-newline)
+      (z/right)
+      (indent 16)))
+
 (defn conj-deps
   "Lots in here to pull out..."
-  [prj-map deps]
-  (let [[k zpr] (determine-case prj-map)]
-    (try [true
-          (case k
-            :some-vector (let [zpr' (-> zpr z/down z/rightmost)
-                               present-deps (into #{} (map (comp keyword first)
-                                                           (z/sexpr zpr)))]
-                           (reduce (fn [z new-dep]
-                                     (-> z
-                                         (z/insert-right new-dep)
-                                         (z/append-newline)
-                                         (z/right)
-                                         (indent 16)))
-                                   zpr'
-                                   (distinct
-                                    (map (fn [[k v]] [(-> k
-                                                          keyword->str
-                                                          symbol) v])
-                                         (remove (fn [[k v]]
-                                                   (present-deps (keyword k))) deps)))))
+  [[k z] deps]
+  (try [true
+        (case k
+          :some-vector (let [z' (-> z z/down z/rightmost)]
+                         (reduce insert-dep
+                                 z'
+                                 deps))
 
-            :empty-vector (let [deps' (distinct
-                                       (map (fn [[k v]]
-                                              [(-> k
-                                                   keyword->str
-                                                   symbol) v])
-                                            deps))]
-                            (reduce (fn [z new-dep]
-                                      (-> z
-                                          (z/insert-right new-dep)
-                                          (z/append-newline)
-                                          (z/right)
-                                          (indent 16)))
-                                    (-> zpr
-                                        (z/replace [(first deps')])
-                                        (z/down))
-                                    (rest deps')))
-            :some-sequence (ex-info (str ":some-sequence "
-                                         "Post an issue if project.clj is valid: "
-                                         "https://github.com/johnwalker/lein-plz"))
-            :something-else (ex-info (str ":something-else "
-                                          "Post an issue if project.clj is valid "
-                                          "https://github.com/johnwalker/lein-plz")))]
-         (catch Exception e
-           [false (.getMessage e)]))))
+          :empty-vector (reduce insert-dep
+                                (-> z
+                                    (z/replace [(first deps)])
+                                    (z/down))
+                                (rest deps))
+          :no-dep-key     (throw (ex-info :no-dep-key {}))
+          :some-sequence  (throw (ex-info :some-sequence {}))
+          :something-else (throw (ex-info :something-else {})))]
+       (catch Exception e
+         [false (.getMessage e)])))
+
+(defn warn [m]
+  (println "Warning:" m))
+
+(defn generate-bug-report [ex]
+  (let [m (ex-data ex)]
+    (doseq [x [(.getMessage ex)
+               "File a bug report here: "
+               "https://github.com/johnwalker/lein-plz"
+               "--"]]
+      (println x))
+    (println m)))
 
 (defn plz
   "STOP LOOKING AT ME"
   [project & args]
   (let [plz-options (:plz project)
-        [action & abbreviations] args]
+        [action & abbrevs] args]
     (when-not (seq plz-options)
-      (println "No options specified in system profiles.clj."))
-    (when (and (= "add" action) (seq abbreviations))
-      (let [root         (:root project)
-            project-file (str root "/" "project.clj")
-            project-file-contents (slurp project-file)
-            am           (merge fallback-abbreviation-map
-                                (cond (string? plz-options)
-                                      (-> plz-options
-                                          slurp
-                                          read-string)
+      (warn "Using default abbreviatons since no options were found."))
+    (try
+      (when (and (= "add" action) (seq abbrevs))
+        (let [root             (:root project)
 
-                                      (or (vector? plz-options)
-                                          (list? plz-options))
-                                      (apply merge (mapv
-                                                    (comp
-                                                     read-string
-                                                     slurp)
-                                                    plz-options))
+              project-file     (str root "/" "project.clj")
 
-                                      (map? plz-options) plz-options
-                                      :else (when (seq plz-options)
-                                              (println "merge: ")
-                                              (println "File a bug report here: ")
-                                              (println "https://github.com/johnwalker/lein-plz")
-                                              (println)
-                                              (println plz-options))))
-            suggested-dependencies (map (partial abbreviation->dependency-str am)
-                                        abbreviations)
+              project-str      (slurp project-file)
 
-            prj                     (z/of-string project-file-contents)
+              artifact->abbrev (merge fallback-abbreviation-map
+                                      (cond (string? plz-options)
+                                            (read-string (slurp plz-options))
 
-            prj-map                 (z/find-value prj z/next 'defproject)
+                                            (map? plz-options) plz-options
 
-            ;; TODO: improve efficiency here
-            new-dependencies (mapv (comp to-updated-pair symbol)
-                                   suggested-dependencies)]
-        (let [[success result] (conj-deps prj-map new-dependencies)]
-          (if success
-            (let [output (with-out-str (z/print-root result))]
-              (if (>= (count output) (count project-file-contents))
-                ;; Good, nothing shrunk !
-                (spit project-file output)
+                                            (seq plz-options)
+                                            (apply merge (map
+                                                          (comp
+                                                           read-string
+                                                           slurp)
+                                                          plz-options))
 
-                ;; Output shrunk ... aborting write
-                (do (println "shrink: ")
-                    (println "File a bug report here: ")
-                    (println "https://github.com/johnwalker/lein-plz")
-                    (println)
-                    (println project-file-contents)
-                    (println output))))
-            (do
-              (println "Something went wrong.")
-              (println "File a bug report with this message here:")
-              (println "https://github.com/johnwalker/lein-plz")
-              (println [success result]))))))))
+                                            :else
+                                            (when (seq plz-options)
+                                              (throw (ex-info "Merge"
+                                                              {:plz-options
+                                                               plz-options})))))
+
+              prj-map          (-> (z/of-string project-str)
+                                   (z/find-value z/next 'defproject))
+
+              [k z]            (determine-case prj-map)
+
+              present-deps     (get-deps [k z])
+
+              deps             (->> abbrevs
+                                    (distinct)
+                                    (map #(lookup-abbrev artifact->abbrev %))
+                                    (remove nil?)
+                                    (remove present-deps)
+                                    (map to-updated-pair)
+                                    (distinct))]
+          (let [[left right] (conj-deps [k z] deps)]
+            (if left
+              (let [output (with-out-str (z/print-root right))]
+                (if (>= (count output) (count project-str))
+                  (spit project-file output)
+                  (throw (ex-info "Output shrunk" {:project-str project-str
+                                                   :attempted-output output}))))
+              (throw (ex-info "Something went wrong" {:left left
+                                                      :right right}))))))
+      (catch Exception e
+        (generate-bug-report e)))))
