@@ -1,31 +1,31 @@
 * lein-plz
+
   [[img/yes.jpg]]
-
   A Leiningen plugin for quickly adding dependencies to projects.
-
 ** Usage
 
    Suppose you want to add =clojurescript=, =core.async= and
-   =data.json= to a project. Maybe you remember the latest versions
-   off-hand (or at least, a valid one so that you can use lein
-   ancient). You still have to type out the groupIds and -- anyway, it
-   takes some typing.
+   =data.json= to a project. Maybe you know the latest versions
+   off-hand (or at least, some version). You still have to type out
+   the groupIds and -- it takes some typing.
 
-   With =lein-plz=:
+   It's possible to do this instead:
 
    #+BEGIN_SRC sh
      lein plz add async cljs json
    #+END_SRC
 
-   and your =project.clj= is updated with the latest versions of each
-   corresponding dependency. Users specify abbreviations to their
-   desired brevity.
-
+   (These are built-in abbreviations, but they can be easily changed
+   with edn. See [[#adding-your-own-abbreviations][Adding your own abbreviations]])
 ** Setup
 
-   Just add =[lein-plz "0.1.1"]= to the =:plugins= vector of your
-   =:user= profile.
-
+   Add =[lein-plz "0.1.1"]= to the =:plugins= vector in your user
+   profile.
+   #+BEGIN_SRC clojure
+     {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
+                       [lein-plz "0.1.1"]
+                       [slamhound "1.5.5"]]}}
+   #+END_SRC
 *** Adding your own abbreviations
 
    =lein-plz= has fallback abbreviations, but it can be put to better
@@ -38,24 +38,16 @@
    Each map should be in its own file:
 
    #+BEGIN_SRC clojure
-   {org.clojure/clojurescript   #{"clojurescript" "cljs"}
+   ;; Note: these are built-in abbreviations.
+   {org.clojure/clojure         #{"clojure" "clj"}
+    org.clojure/clojurescript   #{"clojurescript" "cljs"}
     org.clojure/core.async      #{"core.async" "async"}
-    org.clojure/core.typed      #{"core.typed" "typed"}
-
-    ;; Databases for jdbc
-    org.apache.derby/derby      #{"derby"}
-    hsqldb/hsqldb               #{"hsqldb"}
-    mysql/mysql-connector-java  #{"mysql"}
-    net.sourceforge.jtds/jtds   #{"jtds"}
-    postgresql/postgresql       #{"postgresql" "postgres"}
-    org.xerial/sqlite-jdbc      #{"sqlite"}
-
     compojure                   #{"compojure"}
     hiccup                      #{"hiccup"}
     ring                        #{"ring"}}
    #+END_SRC
 
-   The keywords are the full dependency names, while each value is a
+   The symbols are the full dependency names, while each value is a
    set of abbreviations for that dependency.
 
    If that map resides in =/home/stuartsierra/.lein/plz/myplzmap.edn=,
@@ -81,12 +73,40 @@
      ;; (merge fallback-abbreviation-map user-map-1 user-map-2 user-map-3 ...)
      ;; so user-map-3 overwrites user-map-2 overwrites ...
    #+END_SRC
-** Warnings from your doctor
-   + +Only use on project.clj's you can afford to throw away.+ Fixed in #2
-   + I haven't checked if relative paths work.
+** Built-in abbreviations
 
+   These abbreviations are built in. User options take precedence over these.
+
+   #+BEGIN_SRC clojure
+   {org.clojure/clojure         #{"clojure" "clj"}
+    org.clojure/clojurescript   #{"clojurescript" "cljs"}
+    org.clojure/core.async      #{"core.async" "async"}
+    org.clojure/core.cache      #{"core.cache" "cache"}
+    org.clojure/core.logic      #{"core.logic" "logic"}
+    org.clojure/core.match      #{"core.match" "match"}
+    org.clojure/core.memoize    #{"core.memoize" "memoize"}
+    org.clojure/core.typed      #{"core.typed" "typed"}
+    org.clojure/data.json       #{"data.json" "json"}
+    org.clojure/data.xml        #{"data.xml" "xml"}
+    org.clojure/java.jdbc       #{"java.jdbc" "jdbc"}
+    ;; Databases for jdbc
+    org.apache.derby/derby      #{"derby"}
+    hsqldb/hsqldb               #{"hsqldb"}
+    mysql/mysql-connector-java  #{"mysql"}
+    net.sourceforge.jtds/jtds   #{"jtds"}
+    postgresql/postgresql       #{"postgresql" "postgres"}
+    org.xerial/sqlite-jdbc      #{"sqlite"}
+
+    compojure                   #{"compojure"}
+    hiccup                      #{"hiccup"}
+    ring                        #{"ring"}}
+   #+END_SRC
+
+** Possible Issues
+
+   + I don't know if relative paths work
 ** License
 
    Copyright © 2014 John Walker
 
-   Distributed under the Eclipse Public License version 1.0 or later
+   Distributed under the Eclipse Public License version 1.0.
