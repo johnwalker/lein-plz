@@ -16,13 +16,6 @@
     org.clojure/data.json       #{"data.json"}
     org.clojure/data.xml        #{"data.xml"}
     org.clojure/java.jdbc       #{"java.jdbc"}
-    ;; Databases for jdbc
-    org.apache.derby/derby      #{"derby"}
-    hsqldb/hsqldb               #{"hsqldb"}
-    mysql/mysql-connector-java  #{"mysql"}
-    net.sourceforge.jtds/jtds   #{"jtds"}
-    postgresql/postgresql       #{"postgresql"}
-    org.xerial/sqlite-jdbc      #{"sqlite"}
 
     compojure                   #{"compojure"}
     hiccup                      #{"hiccup"}
