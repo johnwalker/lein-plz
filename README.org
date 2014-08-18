@@ -105,6 +105,14 @@
 ** Possible Issues
 
    + I don't know if relative paths work
+*** Use with lein-ancient
+
+    =lein-plz= uses the same libraries as [[https://github.com/xsc/lein-ancient][lein-ancient]], the plugin for
+    upgrading dependencies. It's recommended that users of both
+    specify the =lein-plz= dependency as follows:
+    #+BEGIN_SRC clojure
+    [lein-plz "0.1.1" :exclusions [[rewrite-clj] [ancient-clj]]]
+    #+END_SRC
 ** License
 
    Copyright © 2014 John Walker
