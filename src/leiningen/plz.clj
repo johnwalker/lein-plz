@@ -7,21 +7,21 @@
 (def fallback-abbreviation-map
   `{org.clojure/clojure         #{"clojure" "clj"}
     org.clojure/clojurescript   #{"clojurescript" "cljs"}
-    org.clojure/core.async      #{"core.async" "async"}
-    org.clojure/core.cache      #{"core.cache" "cache"}
-    org.clojure/core.logic      #{"core.logic" "logic"}
-    org.clojure/core.match      #{"core.match" "match"}
-    org.clojure/core.memoize    #{"core.memoize" "memoize"}
-    org.clojure/core.typed      #{"core.typed" "typed"}
-    org.clojure/data.json       #{"data.json" "json"}
-    org.clojure/data.xml        #{"data.xml" "xml"}
-    org.clojure/java.jdbc       #{"java.jdbc" "jdbc"}
+    org.clojure/core.async      #{"core.async"}
+    org.clojure/core.cache      #{"core.cache"}
+    org.clojure/core.logic      #{"core.logic"}
+    org.clojure/core.match      #{"core.match"}
+    org.clojure/core.memoize    #{"core.memoize"}
+    org.clojure/core.typed      #{"core.typed"}
+    org.clojure/data.json       #{"data.json"}
+    org.clojure/data.xml        #{"data.xml"}
+    org.clojure/java.jdbc       #{"java.jdbc"}
     ;; Databases for jdbc
     org.apache.derby/derby      #{"derby"}
     hsqldb/hsqldb               #{"hsqldb"}
     mysql/mysql-connector-java  #{"mysql"}
     net.sourceforge.jtds/jtds   #{"jtds"}
-    postgresql/postgresql       #{"postgresql" "postgres"}
+    postgresql/postgresql       #{"postgresql"}
     org.xerial/sqlite-jdbc      #{"sqlite"}
 
     compojure                   #{"compojure"}
