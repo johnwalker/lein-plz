@@ -12,11 +12,12 @@
    It's possible to do this instead:
 
    #+BEGIN_SRC sh
-     lein plz add async cljs json
+     lein plz add core.async cljs data.json
    #+END_SRC
 
-   (These are built-in abbreviations, but they can be easily changed
-   with edn. See [[#adding-your-own-abbreviations][Adding your own abbreviations]])
+   (These are built-in nicknames, but they can be easily changed
+   (replaced, shortened or whatever) by adding your own edn maps. See
+   [[#adding-your-own-nicknames][Adding your own nicknames]])
 ** Setup
 
    Add =[lein-plz "0.1.1"]= to the =:plugins= vector in your user
@@ -26,19 +27,19 @@
                        [lein-plz "0.1.1"]
                        [slamhound "1.5.5"]]}}
    #+END_SRC
-*** Adding your own abbreviations
+*** Adding your own nicknames
 
-   =lein-plz= has fallback abbreviations, but it can be put to better
+   =lein-plz= has fallback nicknames, but it can be put to better
    use with your own. User specified maps get merged later.
 
    #+BEGIN_SRC clojure
-   (merge fallback-abbreviation-map user-map-1 user-map-2 user-map-3 ...)
+   (merge fallback-nickname-map user-map-1 user-map-2 user-map-3 ...)
    #+END_SRC
 
    Each map should be in its own file:
 
    #+BEGIN_SRC clojure
-   ;; Note: these are built-in abbreviations.
+   ;; Note: these are built-in nicknames.
    {org.clojure/clojure         #{"clojure" "clj"}
     org.clojure/clojurescript   #{"clojurescript" "cljs"}
     org.clojure/core.async      #{"core.async" "async"}
@@ -48,7 +49,7 @@
    #+END_SRC
 
    The symbols are the full dependency names, while each value is a
-   set of abbreviations for that dependency.
+   set of nicknames for that dependency.
 
    If that map resides in =/home/stuartsierra/.lein/plz/myplzmap.edn=,
    then =/home/stuartsierra/.lein/profiles.clj= should be:
@@ -70,12 +71,12 @@
                    "/home/stuartsierra/.lein/plz/user-map-2.edn"
                    "/home/stuartsierra/.lein/plz/user-map-3.edn"]}}
 
-     ;; (merge fallback-abbreviation-map user-map-1 user-map-2 user-map-3 ...)
+     ;; (merge fallback-nickname-map user-map-1 user-map-2 user-map-3 ...)
      ;; so user-map-3 overwrites user-map-2 overwrites ...
    #+END_SRC
-** Built-in abbreviations
+** Built-in nicknames
 
-   These abbreviations are built in. User options take precedence over these.
+   These nicknames are built in. User options take precedence over these.
 
    #+BEGIN_SRC clojure
    {org.clojure/clojure         #{"clojure" "clj"}
