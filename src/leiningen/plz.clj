@@ -5,7 +5,7 @@
             [rewrite-clj.zip.indent :refer [indent]]))
 
 (def fallback-abbreviation-map
-  `{org.clojure/clojure         #{"clojure" "clj"}
+  '{org.clojure/clojure         #{"clojure" "clj"}
     org.clojure/clojurescript   #{"clojurescript" "cljs"}
     org.clojure/core.async      #{"core.async"}
     org.clojure/core.cache      #{"core.cache"}
