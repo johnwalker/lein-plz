@@ -42,7 +42,7 @@
    ;; Note: these are built-in nicknames.
    {org.clojure/clojure         #{"clojure" "clj"}
     org.clojure/clojurescript   #{"clojurescript" "cljs"}
-    org.clojure/core.async      #{"core.async" "async"}
+    org.clojure/core.async      #{"core.async"}
     compojure                   #{"compojure"}
     hiccup                      #{"hiccup"}
     ring                        #{"ring"}}
@@ -76,7 +76,7 @@
    #+END_SRC
 ** Built-in nicknames
 
-   These nicknames are built in. User options take precedence over these.
+   These nicknames are built-in. User options take precedence over these.
 
    #+BEGIN_SRC clojure
    {org.clojure/clojure         #{"clojure" "clj"}
