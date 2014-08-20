@@ -4,7 +4,7 @@
             [rewrite-clj.zip :as z]
             [rewrite-clj.zip.indent :refer [indent]]))
 
-(def fallback-abbreviation-map
+(def fallback-nicknames
   '{org.clojure/clojure         #{"clojure" "clj"}
     org.clojure/clojurescript   #{"clojurescript" "cljs"}
     org.clojure/core.async      #{"core.async"}
@@ -22,11 +22,11 @@
     ring                        #{"ring"}})
 
 
-(defn lookup-abbrev
-  [abbreviation-map abbrev]
-  (->> abbreviation-map
-       (filter (fn [[dependency set-of-abbrevs]]
-                 (when (set-of-abbrevs abbrev)
+(defn lookup-nick
+  [nickname-map nick]
+  (->> nickname-map
+       (filter (fn [[dependency set-of-nicks]]
+                 (when (set-of-nicks nick)
                    dependency)))
        first first))
 
@@ -91,37 +91,38 @@
     (println m)))
 
 (defn plz
+  "Add dependencies using their nicknames."
   [project & args]
   (let [plz-options (:plz project)
-        [action & abbrevs] args]
+        [action & nicks] args]
     (when-not (seq plz-options)
-      (warn "Using default abbreviatons since no options were found."))
+      (warn "Using default nicknames since no options were found."))
     (try
-      (when (and (= "add" action) (seq abbrevs))
+      (when (and (= "add" action) (seq nicks))
         (let [root             (:root project)
 
               project-file     (str root "/" "project.clj")
 
               project-str      (slurp project-file)
 
-              artifact->abbrev (merge fallback-abbreviation-map
-                                      (cond (string? plz-options)
-                                            (read-string (slurp plz-options))
+              artifact->nick (merge fallback-nicknames
+                                    (cond (string? plz-options)
+                                          (read-string (slurp plz-options))
 
-                                            (map? plz-options) plz-options
+                                          (map? plz-options) plz-options
 
-                                            (seq plz-options)
-                                            (apply merge (map
-                                                          (comp
-                                                           read-string
-                                                           slurp)
-                                                          plz-options))
+                                          (seq plz-options)
+                                          (apply merge (map
+                                                        (comp
+                                                         read-string
+                                                         slurp)
+                                                        plz-options))
 
-                                            :else
-                                            (when (seq plz-options)
-                                              (throw (ex-info "Merge"
-                                                              {:plz-options
-                                                               plz-options})))))
+                                          :else
+                                          (when (seq plz-options)
+                                            (throw (ex-info "Merge"
+                                                            {:plz-options
+                                                             plz-options})))))
 
               prj-map          (-> (z/of-string project-str)
                                    (z/find-value z/next 'defproject))
@@ -130,9 +131,9 @@
 
               present-deps     (get-deps [k z])
 
-              deps             (->> abbrevs
+              deps             (->> nicks
                                     (distinct)
-                                    (map #(lookup-abbrev artifact->abbrev %))
+                                    (map #(lookup-nick artifact->nick %))
                                     (remove nil?)
                                     (remove present-deps)
                                     (map to-updated-pair)
