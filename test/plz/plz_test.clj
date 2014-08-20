@@ -1,4 +1,4 @@
-(ns leiningen.plz-test
+(ns plz.plz-test
   (:require [clojure.test :refer :all]
             [leiningen.plz :refer :all]
             [rewrite-clj.zip :as z]
