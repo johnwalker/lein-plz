@@ -20,11 +20,11 @@
    [[#adding-your-own-nicknames][Adding your own nicknames]])
 ** Setup
 
-   Add =[lein-plz "0.1.1"]= to the =:plugins= vector in your user
+   Add =[lein-plz "0.1.2"]= to the =:plugins= vector in your user
    profile.
    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                       [lein-plz "0.1.1"]
+                       [lein-plz "0.1.2"]
                        [slamhound "1.5.5"]]}}
    #+END_SRC
 *** Adding your own nicknames
@@ -56,7 +56,7 @@
 
    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                       [lein-plz "0.1.1"]
+                       [lein-plz "0.1.2"]
                        [slamhound "1.5.5"]]
              :plz ["/home/stuartsierra/.lein/plz/myplzmap.edn"]}}
    #+END_SRC
@@ -65,7 +65,7 @@
 
    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                       [lein-plz "0.1.1"]
+                       [lein-plz "0.1.2"]
                        [slamhound "1.5.5"]]
              :plz ["/home/stuartsierra/.lein/plz/myplzmap.edn"
                    "/home/stuartsierra/.lein/plz/user-map-2.edn"
@@ -105,7 +105,7 @@
     upgrading dependencies. It's recommended that users of both
     specify the =lein-plz= dependency as follows:
     #+BEGIN_SRC clojure
-    [lein-plz "0.1.1" :exclusions [[rewrite-clj] [ancient-clj]]]
+    [lein-plz "0.1.2" :exclusions [[rewrite-clj] [ancient-clj]]]
     #+END_SRC
 ** License
 
