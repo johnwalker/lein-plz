@@ -1,0 +1,7 @@
+* lein-plz
+** 0.1.2
+   + *Terminology change* - abbreviations are now nicknames
+   + Removed several nicknames and dependencies from the fallbacks
+   + Fixed bug in which unnamespaced, built in symbols were qualified
+     as leiningen.plz/{symbol}
+   + Added docstring to plz task
