@@ -1,44 +1,71 @@
 * lein-plz
+  #+BEGIN_SRC
+  ScaRy, ScaRy GUy, BOinG!
+  GRaPEfRUit fallS!
+  ScaRy, Sick, BaRfy…
+  GO anD… la la la!
+  DinG! ScaRy!
 
-  [[img/yes.jpg]]
+  -- Mr. Saturn
+  #+END_SRC
+
   A Leiningen plugin for quickly adding dependencies to projects.
 ** Usage
+***  Nicknames
+     Suppose you want to add =clojurescript=, =core.async= and
+     =data.json= to a project. Maybe you know the latest versions
+     off-hand (or at least, some version). You still have to type out
+     the groupIds and -- it takes some typing.
 
-   Suppose you want to add =clojurescript=, =core.async= and
-   =data.json= to a project. Maybe you know the latest versions
-   off-hand (or at least, some version). You still have to type out
-   the groupIds and -- it takes some typing.
+     It's possible to do this instead:
 
-   It's possible to do this instead:
+     #+BEGIN_SRC sh
+       $ lein plz add core.async cljs data.json
+     #+END_SRC
 
-   #+BEGIN_SRC sh
-     lein plz add core.async cljs data.json
-   #+END_SRC
+     (These are built-in nicknames, but they can be easily changed
+     (replaced, shortened, lengthened) by adding your own edn
+     maps. See [[#adding-your-own-nicknames][Adding your own nicknames]])
+*** Groups
+    Suppose you're about to build a webapp to advertise
+    =core.logic=. You've [[#adding-your-own-groups][added groups]], so you only need to combine the
+    dependencies from the server and client.
 
-   (These are built-in nicknames, but they can be easily changed
-   (replaced, shortened or whatever) by adding your own edn maps. See
-   [[#adding-your-own-nicknames][Adding your own nicknames]])
+    #+BEGIN_SRC sh
+      $ lein plz add server-group client-group core.logic
+    #+END_SRC
+
+    The result:
+
+    #+BEGIN_SRC clojure
+      :dependencies [[org.clojure/clojure "1.6.0"]
+                     [http-kit "2.1.18"]
+                     [compojure "1.1.8"]
+                     [om "0.7.1"]
+                     [org.clojure/core.async "0.1.338.0-5c5012-alpha"]
+                     [org.clojure/clojurescript "0.0-2311"]
+                     [org.clojure/core.logic "0.8.8"]]
+    #+END_SRC
 ** Setup
-
-   Add =[lein-plz "0.1.2"]= to the =:plugins= vector in your user
+   Add =[lein-plz "0.2.0"]= to the =:plugins= vector in your user
    profile.
    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                       [lein-plz "0.1.2"]
+                       [lein-plz "0.2.0"]
                        [slamhound "1.5.5"]]}}
    #+END_SRC
 *** Adding your own nicknames
+    =lein-plz= has fallback nicknames, but it can be put to better use
+    with your own. It maintains a global map of dependencies,
+    equivalent to:
 
-   =lein-plz= has fallback nicknames, but it can be put to better
-   use with your own. User specified maps get merged later.
-
-   #+BEGIN_SRC clojure
+    #+BEGIN_SRC clojure
    (merge fallback-nickname-map user-map-1 user-map-2 user-map-3 ...)
-   #+END_SRC
+    #+END_SRC
 
-   Each map should be in its own file:
+    Each map should be in its own file:
 
-   #+BEGIN_SRC clojure
+    #+BEGIN_SRC clojure
    ;; Note: these are built-in nicknames.
    {org.clojure/clojure         #{"clojure" "clj"}
     org.clojure/clojurescript   #{"clojurescript" "cljs"}
@@ -46,36 +73,71 @@
     compojure                   #{"compojure"}
     hiccup                      #{"hiccup"}
     ring                        #{"ring"}}
-   #+END_SRC
+    #+END_SRC
 
-   The symbols are the full dependency names, while each value is a
-   set of nicknames for that dependency.
+    The symbols are the full dependency names, while each value is a
+    set of nicknames for that dependency.
 
-   If that map resides in =/home/stuartsierra/.lein/plz/myplzmap.edn=,
-   then =/home/stuartsierra/.lein/profiles.clj= should be:
+    If that map resides in =/home/stuartsierra/.plz/myplzmap.edn=,
+    then =/home/stuartsierra/.lein/profiles.clj= should be:
 
-   #+BEGIN_SRC clojure
+    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                       [lein-plz "0.1.2"]
+                       [lein-plz "0.2.0"]
                        [slamhound "1.5.5"]]
-             :plz ["/home/stuartsierra/.lein/plz/myplzmap.edn"]}}
-   #+END_SRC
+             :plz ["/home/stuartsierra/.plz/myplzmap.edn"]}}
+    #+END_SRC
 
-   There can be more maps:
+    There can be more maps:
 
-   #+BEGIN_SRC clojure
+    #+BEGIN_SRC clojure
      {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                       [lein-plz "0.1.2"]
+                       [lein-plz "0.2.0"]
                        [slamhound "1.5.5"]]
-             :plz ["/home/stuartsierra/.lein/plz/myplzmap.edn"
-                   "/home/stuartsierra/.lein/plz/user-map-2.edn"
-                   "/home/stuartsierra/.lein/plz/user-map-3.edn"]}}
+             :plz ["/home/stuartsierra/.plz/myplzmap.edn"
+                   "/home/stuartsierra/.plz/user-map-2.edn"
+                   "/home/stuartsierra/.plz/user-map-3.edn"]}}
 
      ;; (merge fallback-nickname-map user-map-1 user-map-2 user-map-3 ...)
      ;; so user-map-3 overwrites user-map-2 overwrites ...
-   #+END_SRC
-** Built-in nicknames
+    #+END_SRC
+*** Adding your own groups
+    You can add collections of dependencies at a time using
+    groups. Create files containing edn maps such as these:
 
+    #+BEGIN_SRC clojure
+    ;; server-group
+    ;; /home/stuartsierra/.plz/server.edn
+    {http-kit                        #{"http-kit"}
+     compojure                       #{"compojure"}}
+
+    ;; client-group
+    ;; /home/stuartsierra/.plz/client.edn
+    {om                              #{"om"}
+     org.clojure/core.async          #{"core.async" "async"}
+     org.clojure/clojurescript       #{"clojurescript" "cljs"}}
+    #+END_SRC
+
+    The dependencies in each map can be referenced by following their
+    filename with :as key and the group's name.
+
+    #+BEGIN_SRC clojure
+    {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
+                      [lein-plz "0.2.0"]
+                      [slamhound "1.5.5"]]
+            :plz [["/home/stuartsierra/.plz/server.edn" :as "server-group"]
+                  ["/home/stuartsierra/.plz/client.edn" :as "client-group"]
+                  ["/home/stuartsierra/.plz/myplzmap.edn"]]}}
+    #+END_SRC
+    
+    #+BEGIN_SRC sh
+      $ lein plz add server-group client-group
+    #+END_SRC
+
+    The merge order in [[#adding-your-own-nicknames][adding your own nicknames]] is maintained. [[https://github.com/johnwalker/lein-plz/wiki/Groups][The
+    wiki has a collection of groups for getting started]]. Feel free to
+    contribute your own groups to the wiki!
+** Built-in nicknames
    These nicknames are built-in. User options take precedence over these.
 
    #+BEGIN_SRC clojure
@@ -95,20 +157,16 @@
     hiccup                      #{"hiccup"}
     ring                        #{"ring"}}
    #+END_SRC
-
 ** Possible Issues
-
    + I don't know if relative paths work
 *** Use with lein-ancient
-
     =lein-plz= uses the same libraries as [[https://github.com/xsc/lein-ancient][lein-ancient]], the plugin for
     upgrading dependencies. It's recommended that users of both
     specify the =lein-plz= dependency as follows:
     #+BEGIN_SRC clojure
-    [lein-plz "0.1.2" :exclusions [[rewrite-clj] [ancient-clj]]]
+    [lein-plz "0.2.0" :exclusions [[rewrite-clj] [ancient-clj]]]
     #+END_SRC
 ** License
-
    Copyright © 2014 John Walker
 
    Distributed under the Eclipse Public License version 1.0.
