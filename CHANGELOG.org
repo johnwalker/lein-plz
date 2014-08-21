@@ -1,4 +1,8 @@
 * lein-plz
+** 0.2.0
+   + Added group functionality. Use the =:as= key in the =:plz= vector.
+   + Added warnings for unrecognized nicknames
+   + Dependencies are fetched using pmap
 ** 0.1.2
    + *Terminology change* - abbreviations are now nicknames
    + Removed several nicknames and dependencies from the fallbacks
