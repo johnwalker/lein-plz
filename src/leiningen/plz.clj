@@ -2,7 +2,8 @@
   (:require [ancient-clj.core :as anc]
             [clojure.java.io :as io]
             [rewrite-clj.zip :as z]
-            [rewrite-clj.zip.indent :refer [indent]]))
+            [rewrite-clj.zip.indent :refer [indent]]
+            [leiningen.core.main :as main]))
 
 (def fallback-nicknames
   '{org.clojure/clojure         #{"clojure" "clj"}
@@ -20,7 +21,6 @@
     compojure                   #{"compojure"}
     hiccup                      #{"hiccup"}
     ring                        #{"ring"}})
-
 
 (defn lookup-nick
   [nickname-map nick]
@@ -79,7 +79,7 @@
          [false (.getMessage e)])))
 
 (defn warn [m]
-  (println "Warning:" m))
+  (main/info "Warning:" m))
 
 (defn generate-bug-report [ex]
   (let [m (ex-data ex)]
@@ -87,8 +87,8 @@
                "File a bug report here: "
                "https://github.com/johnwalker/lein-plz"
                "--"]]
-      (println x))
-    (println m)))
+      (main/info x))
+    (main/info m)))
 
 (defn plz
   "Add dependencies using their nicknames."
@@ -105,24 +105,56 @@
 
               project-str      (slurp project-file)
 
-              artifact->nick (merge fallback-nicknames
-                                    (cond (string? plz-options)
-                                          (read-string (slurp plz-options))
+              entry-parser (fn [entry]
+                             (cond
+                              (and (vector? entry)
+                                   (= :as (nth entry 1 nil))
+                                   (nth entry 2 nil))
+                              [(nth entry 2 nil)
+                               (-> (first entry)
+                                   slurp
+                                   read-string)]
+                              (vector? entry)
+                              [nil
+                               (-> (first entry)
+                                   slurp
+                                   read-string)]
+                              (string? entry)
+                              [nil
+                               (-> entry
+                                   slurp
+                                   read-string)]))
 
-                                          (map? plz-options) plz-options
+              [groups artifact->nick]
+              (cond (string? plz-options)
+                    [nil
+                     (read-string
+                      (slurp plz-options))]
 
-                                          (seq plz-options)
-                                          (apply merge (map
-                                                        (comp
-                                                         read-string
-                                                         slurp)
-                                                        plz-options))
+                    (map? plz-options)
+                    [nil plz-options]
 
-                                          :else
-                                          (when (seq plz-options)
-                                            (throw (ex-info "Merge"
-                                                            {:plz-options
-                                                             plz-options})))))
+                    (seq plz-options)
+                    (reduce (fn [[groups global]
+                                 [group-name group]]
+                              [(if group-name
+                                 (assoc groups group-name (-> group
+                                                              keys
+                                                              vec))
+                                 groups)
+                               (merge global group)])
+                            [nil nil]
+                            (mapv
+                             (comp
+                              entry-parser)
+                             plz-options))
+                    :else
+                    (when (seq plz-options)
+                      (throw (ex-info "Merge"
+                                      {:plz-options
+                                       plz-options}))))
+
+              artifact->nick   (merge fallback-nicknames artifact->nick)
 
               prj-map          (-> (z/of-string project-str)
                                    (z/find-value z/next 'defproject))
@@ -130,14 +162,26 @@
               [k z]            (determine-case prj-map)
 
               present-deps     (get-deps [k z])
-
-              deps             (->> nicks
-                                    (distinct)
-                                    (map #(lookup-nick artifact->nick %))
-                                    (remove nil?)
-                                    (remove present-deps)
-                                    (map to-updated-pair)
-                                    (distinct))]
+              
+              deps    (->> nicks
+                           (distinct)
+                           (reduce (fn [normalized-deps word]
+                                     (if-let [g (groups word)]
+                                       (into normalized-deps (sort (map (fn [dep] [word dep]) g)))
+                                       (conj normalized-deps [word (lookup-nick artifact->nick word)]))) [])
+                           (group-by (comp some? second))
+                           ((fn [m]
+                              (let [known-pairs (future
+                                                  (->> (get-in m [true])
+                                                       (map second)
+                                                       (remove present-deps)
+                                                       (pmap to-updated-pair)
+                                                       (distinct)))
+                                    unknown-deps (->> (get-in m [false])
+                                                      (map first))]
+                                (doseq [u unknown-deps]
+                                  (main/info "Unrecognized nickname" u))
+                                @known-pairs))))]
           (let [[left right] (conj-deps [k z] deps)]
             (if left
               (let [output (with-out-str (z/print-root right))]
