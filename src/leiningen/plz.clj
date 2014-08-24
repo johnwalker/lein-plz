@@ -8,6 +8,7 @@
 (def fallback-nicknames
   '{org.clojure/clojure         #{"clojure" "clj"}
     org.clojure/clojurescript   #{"clojurescript" "cljs"}
+    org.clojure/algo.monads     #{"algo.monads"}
     org.clojure/core.async      #{"core.async"}
     org.clojure/core.cache      #{"core.cache"}
     org.clojure/core.logic      #{"core.logic"}
@@ -156,6 +157,8 @@
 
               artifact->nick   (merge fallback-nicknames artifact->nick)
 
+              groups           (or groups {})
+              
               prj-map          (-> (z/of-string project-str)
                                    (z/find-value z/next 'defproject))
 

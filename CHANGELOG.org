@@ -1,4 +1,7 @@
 * lein-plz
+** 0.2.1
+   + "No groups added" case is less noisy
+   + Added org.clojure/algo.monads 
 ** 0.2.0
    + Added group functionality. Use the =:as= key in the =:plz= vector.
    + Added warnings for unrecognized nicknames
