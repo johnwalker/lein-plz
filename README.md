@@ -166,6 +166,7 @@ These nicknames are built-in. User options take precedence over these.
 ```clojure
 {org.clojure/clojure         #{"clojure" "clj"}
  org.clojure/clojurescript   #{"clojurescript" "cljs"}
+ org.clojure/algo.monads      #{"algo.monads"}
  org.clojure/core.async      #{"core.async"}
  org.clojure/core.cache      #{"core.cache"}
  org.clojure/core.logic      #{"core.logic"}

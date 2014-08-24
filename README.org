@@ -139,6 +139,7 @@ $ lein plz add server-group client-group
    #+BEGIN_SRC clojure
 {org.clojure/clojure         #{"clojure" "clj"}
  org.clojure/clojurescript   #{"clojurescript" "cljs"}
+ org.clojure/algo.monads     #{"algo.monads"}
  org.clojure/core.async      #{"core.async"}
  org.clojure/core.cache      #{"core.cache"}
  org.clojure/core.logic      #{"core.logic"}
