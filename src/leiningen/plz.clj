@@ -1,9 +1,11 @@
 (ns leiningen.plz
   (:require [ancient-clj.core :as anc]
             [clojure.java.io :as io]
+            [clojure.string :as str]
+            [leiningen.core.main :as main]
             [rewrite-clj.zip :as z]
             [rewrite-clj.zip.indent :refer [indent]]
-            [leiningen.core.main :as main]))
+            [table.core :refer [table]]))
 
 (def fallback-nicknames
   '{org.clojure/algo.generic                     #{"algo.generic"}
@@ -525,108 +527,140 @@
       (main/info x))
     (main/info m)))
 
+(defn print-instructions []
+  (main/info
+    (str
+      "Add dependencies to your existing project.clj file.\n"
+      "Use the following commands:\n\n"
+      "  - add <nick or nicks>"
+      " -- Adds the dependencies associated with each nick to the project.\n"
+      "    Example: lein plz add core.async cljs data.json\n\n"
+      "  - list <& filter> -- List the built-in "
+      "(total " (count fallback-nicknames) ") dependencies with their nicknames.\n"
+      "    If called with a filter, it will be passed as a regular expression "
+      "to limit the amount of entries.\n"
+      "    Example: lein plz list org.clojure/")))
+
+;;; Listing
+
+(defn match-entry? [s [path nicks]]
+  (let [pattern (re-pattern (str s))]
+    (or (re-find pattern (str path))
+        (some not-empty (map (partial re-find pattern) nicks)))))
+
+(defn search-nicks [s] (filter (partial match-entry? s) fallback-nicknames))
+
+(defn format-entry [[path nicks]] [path (str/join ", " nicks)])
+
+(defn format-entries [matches]
+  (->> matches
+       (map format-entry)
+       (cons ["Dependency" "Nickname(s)"])
+       table))
+
+(defn list-nicks [s] (-> s search-nicks format-entries))
+
+(defn list-all [] (format-entries (seq fallback-nicknames)))
+
+
+;; Adding
+
+(defn entry-parser [entry]
+  (cond
+    (and (vector? entry)
+         (= :as (get entry 1))
+         (get entry 2))
+    [(get entry 2)
+     (-> (first entry)
+         slurp
+         read-string)]
+    (vector? entry)
+    [nil
+     (-> (first entry)
+         slurp
+         read-string)]
+    (string? entry)
+    [nil
+     (-> entry
+         slurp
+         read-string)]))
+
+(defn parse-options [options]
+  (cond
+    (string? options) [nil (read-string (slurp options))]
+    (map? options)    [nil options]
+    (seq options)     (reduce
+                        (fn [[groups global]
+                             [group-name group]]
+                          [(if group-name
+                             (assoc groups group-name (-> group keys vec))
+                             groups)
+                           (merge global group)])
+                        [nil nil]
+                        (mapv entry-parser options))
+    :else             (when (seq options)
+                        (throw (ex-info "Merge" {:plz-options options})))))
+
+(defn recognize-deps [present-deps m]
+  (let [known-pairs (future
+                      (->> (get-in m [true])
+                           (map second)
+                           (remove present-deps)
+                           (pmap to-updated-pair)
+                           (distinct)))
+        unknown-deps (map first (get-in m [false]))]
+    (doseq [u unknown-deps]
+      (main/info "Unrecognized nickname" u))
+    @known-pairs))
+
+(defn nicks->deps [nicks present-deps groups af-map]
+  (->> nicks
+       (distinct)
+       (reduce (fn [normalized-deps word]
+                 (if-let [g (groups word)]
+                   (into normalized-deps (sort (map (partial vector word) g)))
+                   (conj normalized-deps
+                     [word (lookup-nick af-map word)]))) [])
+       (group-by (comp not nil? second))
+       (recognize-deps present-deps)))
+
+(defn add-deps [project nicks]
+  (let [root            (:root project)
+        project-file    (str root "/" "project.clj")
+        project-str     (slurp project-file)
+        [groups af-map] (parse-options (:plz project))
+        af-map          (merge fallback-nicknames af-map)
+        groups          (or groups {})
+        prj-map         (-> (z/of-string project-str)
+                          (z/find-value z/next 'defproject))
+        [k z]           (determine-case prj-map)
+        present-deps    (get-deps [k z])
+        deps            (nicks->deps nicks present-deps groups af-map)]
+    (when-not (seq (:plz project))
+      (warn "Using default nicknames since no options were found."))
+    (let [[left right] (conj-deps [k z] deps)]
+      (if left
+        (let [output (with-out-str (z/print-root right))]
+          (if (>= (count output) (count project-str))
+            (spit project-file output)
+            (throw (ex-info "Output shrunk" {:project-str project-str
+                                             :attempted-output output}))))
+        (throw (ex-info "Something went wrong" {:left left
+                                                :right right}))))))
+
+;;; Main
+
 (defn plz
   "Add dependencies using their nicknames."
-  [project & args]
-  (let [plz-options (:plz project)
-        [action & nicks] args]
-    (when-not (seq plz-options)
-      (warn "Using default nicknames since no options were found."))
+  [project & stuff]
+  (let [[action & args] stuff]
     (try
-      (when (and (= "add" action) (seq nicks))
-        (let [root             (:root project)
-
-              project-file     (str root "/" "project.clj")
-
-              project-str      (slurp project-file)
-
-              entry-parser (fn [entry]
-                             (cond
-                              (and (vector? entry)
-                                   (= :as (nth entry 1 nil))
-                                   (nth entry 2 nil))
-                              [(nth entry 2 nil)
-                               (-> (first entry)
-                                   slurp
-                                   read-string)]
-                              (vector? entry)
-                              [nil
-                               (-> (first entry)
-                                   slurp
-                                   read-string)]
-                              (string? entry)
-                              [nil
-                               (-> entry
-                                   slurp
-                                   read-string)]))
-
-              [groups artifact->nick]
-              (cond (string? plz-options)
-                    [nil
-                     (read-string
-                      (slurp plz-options))]
-
-                    (map? plz-options)
-                    [nil plz-options]
-
-                    (seq plz-options)
-                    (reduce (fn [[groups global]
-                                 [group-name group]]
-                              [(if group-name
-                                 (assoc groups group-name (-> group
-                                                              keys
-                                                              vec))
-                                 groups)
-                               (merge global group)])
-                            [nil nil]
-                            (mapv
-                             (comp
-                              entry-parser)
-                             plz-options))
-                    :else
-                    (when (seq plz-options)
-                      (throw (ex-info "Merge"
-                                      {:plz-options
-                                       plz-options}))))
-
-              artifact->nick   (merge fallback-nicknames artifact->nick)
-
-              groups           (or groups {})
-              
-              prj-map          (-> (z/of-string project-str)
-                                   (z/find-value z/next 'defproject))
-
-              [k z]            (determine-case prj-map)
-
-              present-deps     (get-deps [k z])
-              
-              deps    (->> nicks
-                           (distinct)
-                           (reduce (fn [normalized-deps word]
-                                     (if-let [g (groups word)]
-                                       (into normalized-deps (sort (map (fn [dep] [word dep]) g)))
-                                       (conj normalized-deps [word (lookup-nick artifact->nick word)]))) [])
-                           (group-by (comp some? second))
-                           ((fn [m]
-                              (let [known-pairs (future
-                                                  (->> (get-in m [true])
-                                                       (map second)
-                                                       (remove present-deps)
-                                                       (pmap to-updated-pair)
-                                                       (distinct)))
-                                    unknown-deps (->> (get-in m [false])
-                                                      (map first))]
-                                (doseq [u unknown-deps]
-                                  (main/info "Unrecognized nickname" u))
-                                @known-pairs))))]
-          (let [[left right] (conj-deps [k z] deps)]
-            (if left
-              (let [output (with-out-str (z/print-root right))]
-                (if (>= (count output) (count project-str))
-                  (spit project-file output)
-                  (throw (ex-info "Output shrunk" {:project-str project-str
-                                                   :attempted-output output}))))
-              (throw (ex-info "Something went wrong" {:left left
-                                                      :right right}))))))
+      (cond
+        (and (= "add" action) (seq args)) (add-deps project args)
+        (and (= "list" action) (seq args)) (list-nicks (str/join " " args))
+        (= "list" action) (list-all)
+        (nil? action) (print-instructions)
+        :else (do (main/info (format "\"%s\" is not a proper command."))
+                  (print-instructions)))
       (catch Exception e
         (generate-bug-report e)))))
