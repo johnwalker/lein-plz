@@ -1,4 +1,13 @@
 * lein-plz
+** 0.3.0
+   + From @luxbock:
+     + Added ~450 new dependencies
+     + Added a list task
+        + Prints dependencies to table
+        + Filters by regex
+     + Refactored add task
+     + Added documentation
+     + Added instructions prompt on malformed commands
 ** 0.2.1
    + "No groups added" case is less noisy
    + Added org.clojure/algo.monads 
