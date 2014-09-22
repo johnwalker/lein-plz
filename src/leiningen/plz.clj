@@ -357,7 +357,7 @@
     dk.ative/docjure                             #{"docjure"}
     factual/drake-interface                      #{"drake-interface"}
     grimradical/clj-semver                       #{"clj-semver"}
-    hornetq-clj/server                           #{"server"}
+    hornetq-clj/server                           #{"hornetq"}
     im.chit/hara.class.inheritance               #{"hara.class.inheritance"}
     im.chit/hara.common.checks                   #{"hara.common.checks"}
     im.chit/hara.common.error                    #{"hara.common.error"}
