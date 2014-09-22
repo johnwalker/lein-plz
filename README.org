@@ -51,18 +51,41 @@ $ lein plz add server-group client-group core.logic
                   [slamhound "1.5.5"]]}}
    #+END_SRC
 *** Adding your own nicknames
-    =lein-plz= has fallback nicknames, but it can be put to better use
-    with your own. It maintains a global map of dependencies,
-    equivalent to:
+=lein-plz= comes prepared with a fairly comprehensive list of fallback nicknames,
+which you can see [[src/leiningen/plz.clj#L8][here]], or by using the =lein plz list= command. You can filter
+the list by adding an additional argument to the command, which is interpreted
+as a regexp to display only the matching items:
+
+#+BEGIN_SRC sh
+lein plz list org.clojure/
+#+END_SRC
+
+=>
+
+#+BEGIN_SRC
++----------------------------+----------------+
+| Dependency                 | Nickname(s)    |
++----------------------------+----------------+
+| org.clojure/core.async     | core.async     |
+| org.clojure/core.contracts | core.contracts |
+| org.clojure/core.logic     | core.logic     |
+| org.clojure/core.typed     | core.typed     |
+| org.clojure/core.unify     | core.unify     |
+| org.clojure/core.match     | core.match     |
+| org.clojure/core.cache     | core.cache     |
+| org.clojure/core.memoize   | core.memoize   |
++----------------------------+----------------+
+#+END_SRC
+
+The list comes from the [[http://crossclj.info/][CrossClj.info]] web site, where each library with a
+popularity score of three and higher is included.
+
+If your favorite library is not present, or you'd like to use a more convenient
+nickname to you, then fear not! You can add more nicknames by including your
+custom dependency -> nickname map like this (Note: these are built-in nicknames,
+so there's no need to include these in your own map):
 
     #+BEGIN_SRC clojure
-(merge fallback-nickname-map user-map-1 user-map-2 user-map-3 ...)
-    #+END_SRC
-
-    Each map should be in its own file:
-
-    #+BEGIN_SRC clojure
-;; Note: these are built-in nicknames.
 {org.clojure/clojure         #{"clojure" "clj"}
  org.clojure/clojurescript   #{"clojurescript" "cljs"}
  org.clojure/core.async      #{"core.async"}
@@ -71,11 +94,17 @@ $ lein plz add server-group client-group core.logic
  ring                        #{"ring"}}
     #+END_SRC
 
-    The symbols are the full dependency names, while each value is a
-    set of nicknames for that dependency.
+where the symbols are the full dependency names, while each value is a set of
+nicknames for that dependency.
 
-    If that map resides in =/home/stuartsierra/.plz/myplzmap.edn=,
-    then =/home/stuartsierra/.lein/profiles.clj= should be:
+=lein-plz= maintains a global map of dependencies, equivalent to:
+
+    #+BEGIN_SRC clojure
+(merge fallback-nickname-map user-map-1 user-map-2 user-map-3 ...)
+    #+END_SRC
+
+If the example map resides in =/home/stuartsierra/.plz/myplzmap.edn=, then
+=/home/stuartsierra/.lein/profiles.clj= should be:
 
     #+BEGIN_SRC clojure
 {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
@@ -84,7 +113,7 @@ $ lein plz add server-group client-group core.logic
         :plz ["/home/stuartsierra/.plz/myplzmap.edn"]}}
     #+END_SRC
 
-    There can be more maps:
+You can use more than one map:
 
     #+BEGIN_SRC clojure
 {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
@@ -93,10 +122,9 @@ $ lein plz add server-group client-group core.logic
         :plz ["/home/stuartsierra/.plz/myplzmap.edn"
               "/home/stuartsierra/.plz/user-map-2.edn"
               "/home/stuartsierra/.plz/user-map-3.edn"]}}
-
-;; (merge fallback-nickname-map user-map-1 user-map-2 user-map-3 ...)
-;; so user-map-3 overwrites user-map-2 overwrites ...
     #+END_SRC
+
+In case of conflicts, the last map always overrides the previous ones, as you'd expect from a =merge=.
 *** Adding your own groups
     You can add collections of dependencies at a time using
     groups. Create files containing edn maps such as these:

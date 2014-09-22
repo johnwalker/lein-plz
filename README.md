@@ -74,18 +74,41 @@ profile.
 
 ### Adding your own nicknames<a id="sec-1-2-1" name="sec-1-2-1"></a>
 
-`lein-plz` has fallback nicknames, but it can be put to better use
-with your own. It maintains a global map of dependencies,
-equivalent to:
+`lein-plz` comes prepared with a fairly comprehensive list of fallback nicknames,
+which you can see here, or by using the `lein plz list` command. You can filter
+the list by adding an additional argument to the command, which is interpreted
+as a regexp to display only the matching items:
 
-```clojure
-(merge fallback-nickname-map user-map-1 user-map-2 user-map-3 ...)
+```sh
+lein plz list org.clojure/
 ```
 
-Each map should be in its own file:
+=>
+
+```
++----------------------------+----------------+
+| Dependency                 | Nickname(s)    |
++----------------------------+----------------+
+| org.clojure/core.async     | core.async     |
+| org.clojure/core.contracts | core.contracts |
+| org.clojure/core.logic     | core.logic     |
+| org.clojure/core.typed     | core.typed     |
+| org.clojure/core.unify     | core.unify     |
+| org.clojure/core.match     | core.match     |
+| org.clojure/core.cache     | core.cache     |
+| org.clojure/core.memoize   | core.memoize   |
++----------------------------+----------------+
+```
+
+The list comes from the [CrossClj.info](http://crossclj.info/) web site, where each library with a
+popularity score of three and higher is included.
+
+If your favorite library is not present, or you'd like to use a more convenient
+nickname to you, then fear not! You can add more nicknames by including your
+custom dependency -> nickname map like this (Note: these are built-in nicknames,
+so there's no need to include these in your own map):
 
 ```clojure
-;; Note: these are built-in nicknames.
 {org.clojure/clojure         #{"clojure" "clj"}
  org.clojure/clojurescript   #{"clojurescript" "cljs"}
  org.clojure/core.async      #{"core.async"}
@@ -94,11 +117,17 @@ Each map should be in its own file:
  ring                        #{"ring"}}
 ```
 
-The symbols are the full dependency names, while each value is a
-set of nicknames for that dependency.
+where the symbols are the full dependency names, while each value is a set of
+nicknames for that dependency.
 
-If that map resides in `/home/stuartsierra/.plz/myplzmap.edn`,
-then `/home/stuartsierra/.lein/profiles.clj` should be:
+`lein-plz` maintains a global map of dependencies, equivalent to:
+
+```clojure
+(merge fallback-nickname-map user-map-1 user-map-2 user-map-3 ...)
+```
+
+If the example map resides in `/home/stuartsierra/.plz/myplzmap.edn`, then
+`/home/stuartsierra/.lein/profiles.clj` should be:
 
 ```clojure
 {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
@@ -107,7 +136,7 @@ then `/home/stuartsierra/.lein/profiles.clj` should be:
         :plz ["/home/stuartsierra/.plz/myplzmap.edn"]}}
 ```
 
-There can be more maps:
+You can use more than one map:
 
 ```clojure
 {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
@@ -116,10 +145,9 @@ There can be more maps:
         :plz ["/home/stuartsierra/.plz/myplzmap.edn"
               "/home/stuartsierra/.plz/user-map-2.edn"
               "/home/stuartsierra/.plz/user-map-3.edn"]}}
-
-;; (merge fallback-nickname-map user-map-1 user-map-2 user-map-3 ...)
-;; so user-map-3 overwrites user-map-2 overwrites ...
 ```
+
+In case of conflicts, the last map always overrides the previous ones, as you'd expect from a `merge`.
 
 ### Adding your own groups<a id="sec-1-2-2" name="sec-1-2-2"></a>
 
@@ -166,7 +194,7 @@ These nicknames are built-in. User options take precedence over these.
 ```clojure
 {org.clojure/clojure         #{"clojure" "clj"}
  org.clojure/clojurescript   #{"clojurescript" "cljs"}
- org.clojure/algo.monads      #{"algo.monads"}
+ org.clojure/algo.monads     #{"algo.monads"}
  org.clojure/core.async      #{"core.async"}
  org.clojure/core.cache      #{"core.cache"}
  org.clojure/core.logic      #{"core.logic"}
@@ -176,7 +204,7 @@ These nicknames are built-in. User options take precedence over these.
  org.clojure/data.json       #{"data.json"}
  org.clojure/data.xml        #{"data.xml"}
  org.clojure/java.jdbc       #{"java.jdbc"}
- 
+
  compojure                   #{"compojure"}
  hiccup                      #{"hiccup"}
  ring                        #{"ring"}}
