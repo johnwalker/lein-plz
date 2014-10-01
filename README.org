@@ -43,11 +43,11 @@ $ lein plz add server-group client-group core.logic
                [org.clojure/core.logic "0.8.8"]]
     #+END_SRC
 ** Setup
-   Add =[lein-plz "0.2.1"]= to the =:plugins= vector in your user
+   Add =[lein-plz "0.3.0"]= to the =:plugins= vector in your user
    profile.
    #+BEGIN_SRC clojure
 {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                  [lein-plz "0.2.1"]
+                  [lein-plz "0.3.0"]
                   [slamhound "1.5.5"]]}}
    #+END_SRC
 *** Adding your own nicknames
@@ -108,7 +108,7 @@ If the example map resides in =/home/stuartsierra/.plz/myplzmap.edn=, then
 
     #+BEGIN_SRC clojure
 {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                  [lein-plz "0.2.1"]
+                  [lein-plz "0.3.0"]
                   [slamhound "1.5.5"]]
         :plz ["/home/stuartsierra/.plz/myplzmap.edn"]}}
     #+END_SRC
@@ -117,7 +117,7 @@ You can use more than one map:
 
     #+BEGIN_SRC clojure
 {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                  [lein-plz "0.2.1"]
+                  [lein-plz "0.3.0"]
                   [slamhound "1.5.5"]]
         :plz ["/home/stuartsierra/.plz/myplzmap.edn"
               "/home/stuartsierra/.plz/user-map-2.edn"
@@ -147,7 +147,7 @@ In case of conflicts, the last map always overrides the previous ones, as you'd 
 
     #+BEGIN_SRC clojure
 {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                  [lein-plz "0.2.1"]
+                  [lein-plz "0.3.0"]
                   [slamhound "1.5.5"]]
         :plz [["/home/stuartsierra/.plz/server.edn" :as "server-group"]
               ["/home/stuartsierra/.plz/client.edn" :as "client-group"]
@@ -624,7 +624,7 @@ $ lein plz add server-group client-group
     upgrading dependencies. It's recommended that users of both
     specify the =lein-plz= dependency as follows:
     #+BEGIN_SRC clojure
-[lein-plz "0.2.1" :exclusions [[rewrite-clj] [ancient-clj]]]
+[lein-plz "0.3.0" :exclusions [[rewrite-clj] [ancient-clj]]]
     #+END_SRC
 ** License
    Copyright © 2014 John Walker, [[https://github.com/luxbock][@luxbock (Olli Piepponen)]] 

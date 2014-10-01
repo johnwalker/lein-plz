@@ -63,12 +63,12 @@ The result:
 
 ## Setup<a id="sec-1-2" name="sec-1-2"></a>
 
-Add `[lein-plz "0.2.1"]` to the `:plugins` vector in your user
+Add `[lein-plz "0.3.0"]` to the `:plugins` vector in your user
 profile.
 
 ```clojure
 {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                  [lein-plz "0.2.1"]
+                  [lein-plz "0.3.0"]
                   [slamhound "1.5.5"]]}}
 ```
 
@@ -131,7 +131,7 @@ If the example map resides in `/home/stuartsierra/.plz/myplzmap.edn`, then
 
 ```clojure
 {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                  [lein-plz "0.2.1"]
+                  [lein-plz "0.3.0"]
                   [slamhound "1.5.5"]]
         :plz ["/home/stuartsierra/.plz/myplzmap.edn"]}}
 ```
@@ -140,7 +140,7 @@ You can use more than one map:
 
 ```clojure
 {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                  [lein-plz "0.2.1"]
+                  [lein-plz "0.3.0"]
                   [slamhound "1.5.5"]]
         :plz ["/home/stuartsierra/.plz/myplzmap.edn"
               "/home/stuartsierra/.plz/user-map-2.edn"
@@ -172,7 +172,7 @@ filename with :as key and the group's name.
 
 ```clojure
 {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                  [lein-plz "0.2.1"]
+                  [lein-plz "0.3.0"]
                   [slamhound "1.5.5"]]
         :plz [["/home/stuartsierra/.plz/server.edn" :as "server-group"]
               ["/home/stuartsierra/.plz/client.edn" :as "client-group"]
@@ -657,7 +657,7 @@ upgrading dependencies. It's recommended that users of both
 specify the `lein-plz` dependency as follows:
 
 ```clojure
-[lein-plz "0.2.1" :exclusions [[rewrite-clj] [ancient-clj]]]
+[lein-plz "0.3.0" :exclusions [[rewrite-clj] [ancient-clj]]]
 ```
 
 ## License<a id="sec-1-5" name="sec-1-5"></a>
