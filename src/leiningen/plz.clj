@@ -414,6 +414,7 @@
     org.bodil/cljs-noderepl                      #{"cljs-noderepl"}
     org.bodil/lein-noderepl                      #{"lein-noderepl"}
     org.bodil/redlobster                         #{"redlobster"}
+    org.danielsz/system                          #{"system"}
     org.dthume/data.set                          #{"data.set"}
     org.flatland/chronicle                       #{"chronicle"}
     org.flatland/laminate                        #{"laminate"}
