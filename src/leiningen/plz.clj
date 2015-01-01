@@ -658,8 +658,7 @@
     (try
       (cond
         (and (= "add" action) (seq args)) (add-deps project args)
-        (and (= "list" action) (seq args)) (list-nicks (str/join " " args))
-        (= "list" action) (list-all)
+        (= "list" action) (if (seq args) (list-nicks (str/join " " args)) (list-all))
         (nil? action) (print-instructions)
         :else (do (main/info (format "\"%s\" is not a proper command."))
                   (print-instructions)))
