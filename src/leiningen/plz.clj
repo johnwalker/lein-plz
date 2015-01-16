@@ -659,8 +659,6 @@
         (and (= "add" action) (seq args)) (add-deps project args)
         (and (= "list" action) (seq args)) (list-nicks (str/join " " args))
         (= "list" action) (list-all)
-        (nil? action) (print-instructions)
-        :else (do (main/info (format "\"%s\" is not a proper command."))
-                  (print-instructions)))
+        :else (print-instructions))
       (catch Exception e
         (generate-bug-report e)))))
