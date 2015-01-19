@@ -1,4 +1,10 @@
 * lein-plz
+** Planned
+   Update for latest rewrite-clj and ancient-clj. Split into smaller
+   projects (lein-add ? lein-list?)
+** 0.3.1
+   + Users no longer warned for using only the default options
+   + Fixed issue where help was not printed on missing command
 ** 0.3.0
    + From @luxbock:
      + Added ~450 new dependencies
