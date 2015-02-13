@@ -201,7 +201,6 @@
     noencore                                     #{"noencore"}
     noir                                         #{"noir"}
     ns-tracker                                   #{"ns-tracker"}
-    om                                           #{"om"}
     onelog                                       #{"onelog"}
     optimus                                      #{"optimus"}
     ordered                                      #{"ordered"}
@@ -416,6 +415,7 @@
     org.immutant/deploy-tools                    #{"deploy-tools"}
     org.maravillas/ring-core-gae                 #{"ring-core-gae"}
     org.markdownj/markdownj                      #{"markdownj"}
+    org.omcljs/om                                #{"om"}
     org.ozias.cljlibs/scm                        #{"scm"}
     org.ozias.cljlibs/shell                      #{"shell"}
     org.scribe/scribe                            #{"scribe"}
