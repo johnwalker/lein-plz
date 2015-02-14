@@ -55,7 +55,7 @@ The result:
 :dependencies [[org.clojure/clojure "1.6.0"]
                [http-kit "2.1.18"]
                [compojure "1.1.8"]
-               [om "0.7.1"]
+               [org.omcljs/om "0.8.8"]
                [org.clojure/core.async "0.1.338.0-5c5012-alpha"]
                [org.clojure/clojurescript "0.0-2311"]
                [org.clojure/core.logic "0.8.8"]]
@@ -162,7 +162,7 @@ groups. Create files containing edn maps such as these:
 
 ;; client-group
 ;; /home/stuartsierra/.plz/client.edn
-{om                              #{"om"}
+{org.omcljs/om                   #{"om"}
  org.clojure/core.async          #{"core.async" "async"}
  org.clojure/clojurescript       #{"clojurescript" "cljs"}}
 ```
