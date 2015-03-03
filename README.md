@@ -1,16 +1,4 @@
-- [lein-plz](#lein-plz)
-  - [Usage](#usage)
-    - [Nicknames Example](#nicknames-example)
-    - [Groups Example](#groups-example)
-  - [Setup](#setup)
-    - [Adding your own nicknames](#adding-your-own-nicknames)
-    - [Adding your own groups](#adding-your-own-groups)
-  - [Built-in nicknames](#built-in-nicknames)
-  - [Possible Issues](#possible-issues)
-    - [Use with lein-ancient](#use-with-lein-ancient)
-  - [License](#license)
-
-# lein-plz<a id="sec-1" name="sec-1"></a>
+# lein-plz
 
 ```
 ScaRy, ScaRy GUy, BOinG!
@@ -24,9 +12,9 @@ DinG! ScaRy!
 
 A Leiningen plugin for quickly adding dependencies to projects.
 
-## Usage<a id="sec-1-1" name="sec-1-1"></a>
+## Usage
 
-### Nicknames Example<a id="sec-1-1-1" name="sec-1-1-1"></a>
+### Nicknames Example
 
 Suppose you want to add `clojurescript`, `core.async` and
 `data.json` to a project. Maybe you know the latest versions
@@ -39,7 +27,7 @@ It's possible to do this instead:
 $ lein plz add core.async cljs data.json
 ```
 
-### Groups Example<a id="sec-1-1-2" name="sec-1-1-2"></a>
+### Groups Example
 
 Suppose you're about to build a webapp to advertise
 `core.logic`. You've setup groups, so you only need to combine the
@@ -61,7 +49,7 @@ The result:
                [org.clojure/core.logic "0.8.8"]]
 ```
 
-## Setup<a id="sec-1-2" name="sec-1-2"></a>
+## Setup
 
 Add `[lein-plz "0.3.3"]` to the `:plugins` vector in your user
 profile.
@@ -72,7 +60,7 @@ profile.
                   [slamhound "1.5.5"]]}}
 ```
 
-### Adding your own nicknames<a id="sec-1-2-1" name="sec-1-2-1"></a>
+### Adding your own nicknames
 
 `lein-plz` comes prepared with a fairly comprehensive list of fallback nicknames,
 which you can see here, or by using the `lein plz list` command. You can filter
@@ -149,7 +137,7 @@ You can use more than one map:
 
 In case of conflicts, the last map always overrides the previous ones, as you'd expect from a `merge`.
 
-### Adding your own groups<a id="sec-1-2-2" name="sec-1-2-2"></a>
+### Adding your own groups
 
 You can add collections of dependencies at a time using
 groups. Create files containing edn maps such as these:
@@ -187,12 +175,12 @@ The merge order in adding your own nicknames (See section ) is maintained. [The
 wiki has a collection of groups for getting started](https://github.com/johnwalker/lein-plz/wiki/Groups). Feel free to
 contribute your own groups to the wiki!
 
-## Built-in nicknames<a id="sec-1-3" name="sec-1-3"></a>
+## Built-in nicknames
 
 These nicknames are built-in. User options take precedence over
 these. View them using `lein plz list`.
 
-### Use with lein-ancient<a id="sec-1-4-1" name="sec-1-4-1"></a>
+### Use with lein-ancient
 
 `lein-plz` uses the same libraries as [lein-ancient](https://github.com/xsc/lein-ancient), the plugin for
 upgrading dependencies. It's recommended that users of both
@@ -204,7 +192,7 @@ specify the `lein-plz` dependency as follows:
 
 This is guaranteed to work with lein-ancient version `0.5.9`.
 
-## License<a id="sec-1-5" name="sec-1-5"></a>
+## License
 
 Copyright © 2014 John Walker, [@luxbock (Olli Piepponen)](https://github.com/luxbock) 
 
