@@ -12,43 +12,9 @@ DinG! ScaRy!
 
 A Leiningen plugin for quickly adding dependencies to projects.
 
-## Usage
-
-### Nicknames Example
-
-Suppose you want to add `clojurescript`, `core.async` and
-`data.json` to a project. Maybe you know the latest versions
-off-hand (or at least, some version). You still have to type out
-the groupIds and &#x2013; it takes some typing.
-
-It's possible to do this instead:
-
 ```sh
 $ lein plz add core.async cljs data.json
 ```
-
-### Groups Example
-
-Suppose you're about to build a webapp to advertise
-`core.logic`. You've setup groups, so you only need to combine the
-dependencies from the server and client.
-
-```sh
-$ lein plz add server-group client-group core.logic
-```
-
-The result:
-
-```clojure
-:dependencies [[org.clojure/clojure "1.6.0"]
-               [http-kit "2.1.18"]
-               [compojure "1.1.8"]
-               [org.omcljs/om "0.8.8"]
-               [org.clojure/core.async "0.1.338.0-5c5012-alpha"]
-               [org.clojure/clojurescript "0.0-2311"]
-               [org.clojure/core.logic "0.8.8"]]
-```
-
 ## Setup
 
 Add `[lein-plz "0.3.3"]` to the `:plugins` vector in your user
@@ -59,42 +25,21 @@ profile.
                   [lein-plz "0.3.3"]
                   [slamhound "1.5.5"]]}}
 ```
-
 ### Adding your own nicknames
 
 `lein-plz` comes prepared with a fairly comprehensive list of fallback nicknames,
-which you can see here, or by using the `lein plz list` command. You can filter
-the list by adding an additional argument to the command, which is interpreted
-as a regexp to display only the matching items:
+which you can see by using the `lein plz list` command. You can filter
+the list by using a regular expression at the end.
 
 ```sh
 lein plz list org.clojure/
 ```
 
-=>
-
-```
-+----------------------------+----------------+
-| Dependency                 | Nickname(s)    |
-+----------------------------+----------------+
-| org.clojure/core.async     | core.async     |
-| org.clojure/core.contracts | core.contracts |
-| org.clojure/core.logic     | core.logic     |
-| org.clojure/core.typed     | core.typed     |
-| org.clojure/core.unify     | core.unify     |
-| org.clojure/core.match     | core.match     |
-| org.clojure/core.cache     | core.cache     |
-| org.clojure/core.memoize   | core.memoize   |
-+----------------------------+----------------+
-```
-
 The list comes from the [CrossClj.info](http://crossclj.info/) web site, where each library with a
 popularity score of three and higher is included.
 
-If your favorite library is not present, or you'd like to use a more convenient
-nickname to you, then fear not! You can add more nicknames by including your
-custom dependency -> nickname map like this (Note: these are built-in nicknames,
-so there's no need to include these in your own map):
+You can add more nicknames by storing your custom dependency -> nickname map 
+as an edn file like `/home/stuartsierra/.plz/myplzmap.edn`:
 
 ```clojure
 {org.clojure/clojure         #{"clojure" "clj"}
@@ -105,34 +50,15 @@ so there's no need to include these in your own map):
  ring                        #{"ring"}}
 ```
 
-where the symbols are the full dependency names, while each value is a set of
-nicknames for that dependency.
-
-`lein-plz` maintains a global map of dependencies, equivalent to:
-
-```clojure
-(merge fallback-nickname-map user-map-1 user-map-2 user-map-3 ...)
-```
-
-If the example map resides in `/home/stuartsierra/.plz/myplzmap.edn`, then
-`/home/stuartsierra/.lein/profiles.clj` should be:
+each symbol is a dependency name, and the values are sets of nicknames
+for that dependency. Enable these nicknames by adding the absolute
+path to your `.lein/profiles.clj` and you are done:
 
 ```clojure
 {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
                   [lein-plz "0.3.3"]
                   [slamhound "1.5.5"]]
         :plz ["/home/stuartsierra/.plz/myplzmap.edn"]}}
-```
-
-You can use more than one map:
-
-```clojure
-{:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                  [lein-plz "0.3.3"]
-                  [slamhound "1.5.5"]]
-        :plz ["/home/stuartsierra/.plz/myplzmap.edn"
-              "/home/stuartsierra/.plz/user-map-2.edn"
-              "/home/stuartsierra/.plz/user-map-3.edn"]}}
 ```
 
 In case of conflicts, the last map always overrides the previous ones, as you'd expect from a `merge`.
@@ -174,11 +100,6 @@ $ lein plz add server-group client-group
 The merge order in adding your own nicknames (See section ) is maintained. [The
 wiki has a collection of groups for getting started](https://github.com/johnwalker/lein-plz/wiki/Groups). Feel free to
 contribute your own groups to the wiki!
-
-## Built-in nicknames
-
-These nicknames are built-in. User options take precedence over
-these. View them using `lein plz list`.
 
 ### Use with lein-ancient
 
