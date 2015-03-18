@@ -1,15 +1,5 @@
 # lein-plz
 
-```
-ScaRy, ScaRy GUy, BOinG!
-GRaPEfRUit fallS!
-ScaRy, Sick, BaRfy…
-GO anD… la la la!
-DinG! ScaRy!
-
--- Mr. Saturn
-```
-
 A Leiningen plugin for quickly adding dependencies to projects.
 
 ```sh
@@ -25,21 +15,19 @@ profile.
                   [lein-plz "0.3.3"]
                   [slamhound "1.5.5"]]}}
 ```
-### Adding your own nicknames
+### Adding nicknames
 
-`lein-plz` comes prepared with a fairly comprehensive list of fallback nicknames,
-which you can see by using the `lein plz list` command. You can filter
-the list by using a regular expression at the end.
+Nicknames are alternative names of projects. They can make project setup
+more convenient, since they can be shorter and more memorable. `lein-plz` 
+comes with a fairly comprehensive list of nicknames, which you can see by
+running `lein plz list`.
 
 ```sh
 lein plz list org.clojure/
 ```
 
-The list comes from the [CrossClj.info](http://crossclj.info/) web site, where each library with a
-popularity score of three and higher is included.
-
 You can add more nicknames by storing your custom dependency -> nickname map 
-as an edn file like `/home/stuartsierra/.plz/myplzmap.edn`:
+as an edn file such as `/home/stuartsierra/.plz/myplzmap.edn`:
 
 ```clojure
 {org.clojure/clojure         #{"clojure" "clj"}
@@ -50,7 +38,7 @@ as an edn file like `/home/stuartsierra/.plz/myplzmap.edn`:
  ring                        #{"ring"}}
 ```
 
-each symbol is a dependency name, and the values are sets of nicknames
+Each symbol is a dependency name, and the values are sets of nicknames
 for that dependency. Enable these nicknames by adding the absolute
 path to your `.lein/profiles.clj` and you are done:
 
@@ -63,7 +51,7 @@ path to your `.lein/profiles.clj` and you are done:
 
 In case of conflicts, the last map always overrides the previous ones, as you'd expect from a `merge`.
 
-### Adding your own groups
+### Adding groups
 
 You can add collections of dependencies at a time using
 groups. Create files containing edn maps such as these:
@@ -81,8 +69,8 @@ groups. Create files containing edn maps such as these:
  org.clojure/clojurescript       #{"clojurescript" "cljs"}}
 ```
 
-The dependencies in each map can be referenced by following their
-filename with :as key and the group's name.
+The dependencies in each map can be referenced from the command line 
+by following their filename with the `:as` keyword and the group's name.
 
 ```clojure
 {:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
@@ -93,13 +81,11 @@ filename with :as key and the group's name.
               ["/home/stuartsierra/.plz/myplzmap.edn"]]}}
 ```
 
+Now you can add all dependencies in that map at once.
+
 ```sh
 $ lein plz add server-group client-group
 ```
-
-The merge order in adding your own nicknames (See section ) is maintained. [The
-wiki has a collection of groups for getting started](https://github.com/johnwalker/lein-plz/wiki/Groups). Feel free to
-contribute your own groups to the wiki!
 
 ### Use with lein-ancient
 
@@ -111,7 +97,7 @@ specify the `lein-plz` dependency as follows:
 [lein-plz "0.3.3" :exclusions [[rewrite-clj] [ancient-clj]]]
 ```
 
-This is guaranteed to work with lein-ancient version `0.5.9`.
+`lein-plz` is known to work with lein-ancient version `0.5.9`.
 
 ## License
 
