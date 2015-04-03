@@ -1,6 +1,7 @@
 (ns leiningen.plz
   (:use leiningen.plz.deps)
   (:require [ancient-clj.core :as anc]
+            [clj-http.client :as http]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [leiningen.core.main :as main]
@@ -15,6 +16,28 @@
                  (when (set-of-nicks nick)
                    dependency)))
        first first))
+
+(defn tokenize [s]
+  (let [s (str/lower-case s)]
+    (set (concat (str/split s #"\W+") (str/split s #"\/")))))
+
+(def crossclj-index
+  (future
+    (->> (-> (http/get "http://crossclj.info/api/v1/prefetch-home")
+             :body
+             (str/replace "\"" "") ; remove quotation marks at the start and end
+             (str/split #"\|"))
+         (partition 6) ; each project is represented in the index by a 6-tuple
+         (map second) ; we only care about the second elem of each tuple (fullname)
+         (map (juxt symbol tokenize))))) ; yield a seq of 2-tuples [dep tags]
+
+(defn search-crossclj [query]
+  (let [query (tokenize query)
+        relevance #(count (clojure.set/intersection (second %) query))]
+    (->> @crossclj-index
+         (filter (comp pos? relevance))
+         (sort-by relevance >)
+         ffirst)))
 
 (defn to-updated-pair [s]
   [s (anc/latest-version-string! {:snapshots? false} s)])
@@ -169,7 +192,8 @@
                  (if-let [g (groups word)]
                    (into normalized-deps (sort (map (partial vector word) g)))
                    (conj normalized-deps
-                         [word (lookup-nick af-map word)]))) [])
+                         [word (or (lookup-nick af-map word)
+                                   (search-crossclj word))]))) [])
        (group-by (comp not nil? second))
        (recognize-deps present-deps)))
 
