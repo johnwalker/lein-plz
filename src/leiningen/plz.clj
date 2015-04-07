@@ -6,7 +6,7 @@
             [clojure.string :as str]
             [leiningen.core.main :as main]
             [rewrite-clj.zip :as z]
-            [rewrite-clj.zip.indent :refer [indent]]
+            [rewrite-clj.node.indent :refer [indent-spaces]]
             [table.core :refer [table]]))
 
 (defn lookup-nick
@@ -40,7 +40,7 @@
          ffirst)))
 
 (defn to-updated-pair [s]
-  [s (anc/latest-version-string! {:snapshots? false} s)])
+  [s (anc/latest-version-string! s {:snapshots? false})])
 
 (defn determine-case [prj-map]
   (if-let [z-deps (z/find-value prj-map :dependencies)]
@@ -65,7 +65,8 @@
       (z/insert-right dep)
       (z/append-newline)
       (z/right)
-      (indent 16)))
+      ;; (indent-spaces 16)
+      ))
 
 (defn conj-deps
   [[k z] deps]
@@ -178,8 +179,8 @@
                       (->> (get-in m [true])
                            (map second)
                            (remove present-deps)
-                           (pmap to-updated-pair)
-                           (distinct)))
+                           (distinct)
+                           (pmap to-updated-pair)))
         unknown-deps (map first (get-in m [false]))]
     (doseq [u unknown-deps]
       (main/info "Unrecognized nickname" u))
@@ -209,8 +210,6 @@
         [k z]           (determine-case prj-map)
         present-deps    (get-deps [k z])
         deps            (nicks->deps nicks present-deps groups af-map)]
-    ;; (when-not (seq (:plz project))
-    ;;   (warn "Using default nicknames since no options were found."))
     (let [[left right] (conj-deps [k z] deps)]
       (if left
         (let [output (with-out-str (z/print-root right))]

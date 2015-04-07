@@ -3,7 +3,11 @@
   :url "http://johnwalker.io/"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[ancient-clj "0.1.10"]
-                 [rewrite-clj "0.3.9"]
+  :dependencies [[rewrite-clj "0.4.12"]
+                 [ancient-clj "0.3.6"
+                  :exclusions [com.amazonaws/aws-java-sdk-s3]]
+                 [com.amazonaws/aws-java-sdk-s3 "1.9.0"
+                  :exclusions [joda-time]]
+                 [clj-http "1.1.0"]
                  [table "0.4.0"]]
   :eval-in-leiningen true)
