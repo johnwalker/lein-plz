@@ -1,7 +1,10 @@
 * lein-plz
 ** Planned
-   Update for latest rewrite-clj and ancient-clj. Split into smaller
-   projects (lein-add ? lein-list?)
+   + Split into smaller projects (lein-add ? lein-list?)
+   + Better lein templates
+** 0.4.0-SNAPSHOT
+   + @mkremins added crossclj fallback (big deal)
+   + updated to latest rewrite-clj 0.4.12 and ancient-clj 0.3.8
 ** 0.3.3
    + Updated project metadata (broken link)
 ** 0.3.2
