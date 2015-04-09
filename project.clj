@@ -4,7 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[rewrite-clj "0.4.12"]
-                 [ancient-clj "0.3.6"
+                 [ancient-clj "0.3.8"
                   :exclusions [com.amazonaws/aws-java-sdk-s3]]
                  [com.amazonaws/aws-java-sdk-s3 "1.9.0"
                   :exclusions [joda-time]]
