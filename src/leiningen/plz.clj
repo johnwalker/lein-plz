@@ -6,7 +6,7 @@
             [clojure.string :as str]
             [leiningen.core.main :as main]
             [rewrite-clj.zip :as z]
-            [rewrite-clj.node.indent :refer [indent-spaces]]
+            [rewrite-clj.zip.whitespace :refer [prepend-space]]
             [table.core :refer [table]]))
 
 (defn lookup-nick
@@ -65,8 +65,7 @@
       (z/insert-right dep)
       (z/append-newline)
       (z/right)
-      ;; (indent-spaces 16)
-      ))
+      (z/prepend-space 16))) 
 
 (defn conj-deps
   [[k z] deps]
