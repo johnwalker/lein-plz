@@ -1,8 +1,7 @@
 (ns plz.plz-test
   (:require [clojure.test :refer :all]
             [leiningen.plz :refer :all]
-            [rewrite-clj.zip :as z]
-            [rewrite-clj.zip.indent :refer [indent]]))
+            [rewrite-clj.zip :as z]))
 
 (defn- zprint-str [[_ v]]
   (with-out-str (z/print-root v)))
