@@ -3,104 +3,98 @@
 A Leiningen plugin for quickly adding dependencies to projects.
 
 ```sh
+# Adding org.clojure/core.async, org.clojure/clojurescript
+# and org.clojure/data.json to a Leiningen project.
+
 $ lein plz add core.async cljs data.json
 ```
-## Setup
 
-Add `[lein-plz "0.3.3"]` to the `:plugins` vector in your user
-profile.
+## Installation
+Add `[lein-plz "0.4.0-SNAPSHOT"]` to your user profile, as you
+would with other Leiningen plugins.
 
 ```clojure
-{:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                  [lein-plz "0.3.3"]
-                  [slamhound "1.5.5"]]}}
-```
-### Adding nicknames
+;; ~/.lein/profiles.clj without lein-ancient 
 
-Nicknames are alternative names of projects. They can make project setup
-more convenient, since they can be shorter and more memorable. `lein-plz` 
-comes with a fairly comprehensive list of nicknames, which you can see by
-running `lein plz list`.
+{:user {:plugins [[lein-plz "0.4.0-SNAPSHOT"]]}}
+```
+
+However, if you are using lein-ancient, use this instead:
+
+```clojure
+;; ~/.lein/profiles.clj with lein-ancient
+
+{:user {:plugins [[lein-ancient "0.6.5"]
+                  [lein-plz "0.4.0-SNAPSHOT" :exclusions [[rewrite-clj] [ancient-clj]]]]}}
+```
+
+## Search
+
+`lein-plz` uses crossclj to fuzzily discover the latest version of the
+dependency you're attempting to add. This means that:
 
 ```sh
-lein plz list org.clojure/
+$ lein plz add data
 ```
-
-You can add more nicknames by storing your custom dependency -> nickname map 
-as an edn file such as `/home/stuartsierra/.plz/myplzmap.edn`:
-
-```clojure
-{org.clojure/clojure         #{"clojure" "clj"}
- org.clojure/clojurescript   #{"clojurescript" "cljs"}
- org.clojure/core.async      #{"core.async"}
- compojure                   #{"compojure"}
- hiccup                      #{"hiccup"}
- ring                        #{"ring"}}
-```
-
-Each symbol is a dependency name, and the values are sets of nicknames
-for that dependency. Enable these nicknames by adding the absolute
-path to your `.lein/profiles.clj` and you are done:
-
-```clojure
-{:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                  [lein-plz "0.3.3"]
-                  [slamhound "1.5.5"]]
-        :plz ["/home/stuartsierra/.plz/myplzmap.edn"]}}
-```
-
-In case of conflicts, the last map always overrides the previous ones, as you'd expect from a `merge`.
-
-### Adding groups
-
-You can add collections of dependencies at a time using
-groups. Create files containing edn maps such as these:
-
-```clojure
-;; server-group
-;; /home/stuartsierra/.plz/server.edn
-{http-kit                        #{"http-kit"}
- compojure                       #{"compojure"}}
-
-;; client-group
-;; /home/stuartsierra/.plz/client.edn
-{org.omcljs/om                   #{"om"}
- org.clojure/core.async          #{"core.async" "async"}
- org.clojure/clojurescript       #{"clojurescript" "cljs"}}
-```
-
-The dependencies in each map can be referenced from the command line 
-by following their filename with the `:as` keyword and the group's name.
-
-```clojure
-{:user {:plugins [[cider/cider-nrepl "0.8.0-SNAPSHOT"]
-                  [lein-plz "0.3.3"]
-                  [slamhound "1.5.5"]]
-        :plz [["/home/stuartsierra/.plz/server.edn" :as "server-group"]
-              ["/home/stuartsierra/.plz/client.edn" :as "client-group"]
-              ["/home/stuartsierra/.plz/myplzmap.edn"]]}}
-```
-
-Now you can add all dependencies in that map at once.
 
 ```sh
-$ lein plz add server-group client-group
+$ lein plz add data.json
 ```
 
-### Use with lein-ancient
+```sh
+$ lein plz add org.clojure/data.json
+```
 
-`lein-plz` uses the same libraries as [lein-ancient](https://github.com/xsc/lein-ancient), the plugin for
-upgrading dependencies. It's recommended that users of both
-specify the `lein-plz` dependency as follows:
+are all probably equivalent, although times do change!
+
+## Overriding Search
+
+Many major projects have well-known nicknames -- for example,
+Clojurescript is usually abbreviated as cljs.
+
+You may specify your own nicknames for projects, and they will take
+precedence over search. `lein-plz` ships with a collection of
+reasonable nicknames. To view them, write:
+
+```sh
+$ lein plz list
+```
+
+the list sub-command takes an optional pattern to filter dependencies.
+
+```sh
+$ lein plz list org.clojure/
+```
+
+It may be the case that you want to add your own nicknames for
+dependencies. As an example, lets say these are dependencies you use
+most often when you are building websites. Create the file
+`~/.plz/server.edn`:
 
 ```clojure
-[lein-plz "0.3.3" :exclusions [[rewrite-clj] [ancient-clj]]]
+{http-kit                        #{"hkit" "hk"}
+ compojure                       #{"cjure" "cpj"}}
 ```
 
-`lein-plz` is known to work with lein-ancient version `0.5.9`.
+and modify your user profile to look something like the following:
+
+```clojure
+{:user {:plugins [[lein-plz "0.4.0-SNAPSHOT"]]}
+ :plz  [["/home/edsnowden/.plz/server.edn" :as "server-group"]]}
+```
+
+`hk` and `hkit` will now be resolved as `http-kit`, and `cjure` and
+`cpj` will be resolved as `compojure`.
+
+Furthermore, you can also write:
+
+```sh
+$ lein plz add server-group
+```
+
+to add both `http-kit` and `compojure` at once.
 
 ## License
-
-Copyright © 2014 John Walker, [@luxbock (Olli Piepponen)](https://github.com/luxbock) 
+Copyright © 2014 John Walker, [@luxbock (Olli Piepponen)](https://github.com/luxbock), @mkremins
 
 Distributed under the Eclipse Public License version 1.0.
